@@ -84,7 +84,7 @@ const ProjectCard = ({ project, index }: { project: any; index: number }) => {
                     initial={{ y: 40, opacity: 0 }}
                     whileInView={{ y: 0, opacity: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
                     className={`absolute -bottom-14 ${isEven ? "-right-6 md:-right-16" : "-left-6 md:-left-16"
                         } z-20 bg-white p-8 md:p-10 shadow-2xl w-[90%] md:w-auto`}
                 >
@@ -173,7 +173,7 @@ const FeaturedProjects = () => {
                         initial={{ opacity: 0, y: 80, rotateX: 20 }}
                         whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] as const }}
                         className="text-6xl md:text-9xl font-serif text-black leading-[0.85] tracking-tight"
                     >
                         Design that <br />

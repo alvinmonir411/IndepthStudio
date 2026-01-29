@@ -6,6 +6,7 @@ import WhyChooseUs from "./Components/HomePages/WhyChooseUs";
 import FeaturedProjects from "./Components/HomePages/FeaturedProjects";
 import BeforeAfterSlider from "./Components/HomePages/BeforeAfterSlider";
 import AchievementsSection from "./Components/HomePages/AchievementsSection";
+import ClientTestimonials from "./Components/HomePages/ClientTestimonials";
 
 
 export default function Home() {
@@ -67,6 +68,7 @@ export default function Home() {
 
       {/* Achievements & Numbers Section */}
       <AchievementsSection />
+      <ClientTestimonials />
 
     </main>
   );

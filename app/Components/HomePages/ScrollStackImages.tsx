@@ -80,7 +80,7 @@ const Card = ({ slide, index, total }: { slide: any; index: number; total: numbe
                 {/* Background Image */}
                 <motion.div
                     style={{ scale: imageScale }}
-                    transition={{ duration: 2.6, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ duration: 2.6, ease: [0.22, 1, 0.36, 1] as const }}
                     className="absolute inset-0 z-0"
                 >
                     <Image
