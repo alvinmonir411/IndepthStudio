@@ -5,6 +5,7 @@ import WhyElegance from "./Components/HomePages/WhyElegance";
 import WhyChooseUs from "./Components/HomePages/WhyChooseUs";
 import FeaturedProjects from "./Components/HomePages/FeaturedProjects";
 import BeforeAfterSlider from "./Components/HomePages/BeforeAfterSlider";
+import AchievementsSection from "./Components/HomePages/AchievementsSection";
 
 
 export default function Home() {
@@ -18,8 +19,27 @@ export default function Home() {
       <FeaturedProjects />
 
       {/* Transformation Showcase Section */}
-      <section className="w-full py-20 px-6 bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 dark:from-black dark:via-zinc-950 dark:to-black">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative w-full py-20 px-6 overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-500 rounded-full blur-[120px] animate-pulse delay-1000" />
+        </div>
+
+        {/* Diagonal lines pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `repeating-linear-gradient(
+              45deg,
+              transparent,
+              transparent 50px,
+              rgba(255,255,255,0.1) 50px,
+              rgba(255,255,255,0.1) 51px
+            )`
+          }} />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               See The Transformation
@@ -44,6 +64,9 @@ export default function Home() {
           </p>
         </div>
       </section>
+
+      {/* Achievements & Numbers Section */}
+      <AchievementsSection />
 
     </main>
   );

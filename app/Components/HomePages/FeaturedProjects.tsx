@@ -207,7 +207,8 @@ const FeaturedProjects = () => {
         px-14
         h-[64px]
         rounded-full
-        bg-black
+        bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900
+        hover:from-amber-600 hover:via-orange-600 hover:to-pink-600
         text-white
         font-bold
         uppercase
@@ -215,6 +216,9 @@ const FeaturedProjects = () => {
         text-sm
         overflow-hidden
         leading-none
+        shadow-2xl
+        border border-white/10
+        transition-all duration-500
       "
                         >
                             {/* TEXT */}
