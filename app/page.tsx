@@ -2,6 +2,7 @@ import Banner from "./Components/HomePages/Banner";
 import AboutSection from "./Components/HomePages/AboutSection";
 import ScrollStackImages from "./Components/HomePages/ScrollStackImages";
 import WhyElegance from "./Components/HomePages/WhyElegance";
+import WhyChooseUs from "./Components/HomePages/WhyChooseUs";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <AboutSection />
       <ScrollStackImages />
       <WhyElegance />
+      <WhyChooseUs />
     </main>
   );
 }
