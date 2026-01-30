@@ -5,6 +5,7 @@ import Navbar from "./Components/Navbar/Navbar";
 import Footer from "./Components/HomePages/Footer";
 import SmoothScroll from "./Components/SmoothScroll";
 import CustomCursor from "./Components/CustomCursor";
+import FloatingContact from "./Components/Common/FloatingContact";
 
 
 const geistSans = Geist({
@@ -40,6 +41,7 @@ export default function RootLayout({
           {children}
           {modal}
           <Footer />
+          <FloatingContact />
         </SmoothScroll>
       </body>
     </html>
