@@ -38,14 +38,34 @@ export default function ServicesOverview() {
                     </motion.div>
 
                     <motion.h2
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
+                        transition={{ duration: 0.1 }}
                         className="text-4xl md:text-6xl font-light text-stone-900 mb-8 leading-[1.2] tracking-tight"
                     >
-                        Creating Purposeful Spaces <br />
-                        <span className="font-serif italic text-stone-500">for Every Need</span>
+                        <div className="overflow-hidden h-fit">
+                            <motion.span
+                                initial={{ y: "150%" }}
+                                whileInView={{ y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                                className="block"
+                            >
+                                Creating Purposeful Spaces
+                            </motion.span>
+                        </div>
+                        <div className="overflow-hidden h-fit">
+                            <motion.span
+                                initial={{ y: "150%" }}
+                                whileInView={{ y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                                className="block font-serif italic text-stone-500"
+                            >
+                                for Every Need
+                            </motion.span>
+                        </div>
                     </motion.h2>
 
                     <motion.div
@@ -76,8 +96,12 @@ export default function ServicesOverview() {
                             key={index}
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.2 + (index * 0.1) }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{
+                                duration: 1.2,
+                                delay: index * 0.15,
+                                ease: [0.22, 1, 0.36, 1]
+                            }}
                             className="group relative"
                         >
                             <div className="relative z-10 p-12 rounded-[3.5rem] bg-white transition-all duration-700 group-hover:-translate-y-4 border border-stone-100 group-hover:border-amber-200/50 flex flex-col h-full shadow-[0_10px_40px_-20px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)]">

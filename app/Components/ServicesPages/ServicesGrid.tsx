@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { servicesData } from '@/app/services/servicesData';
+import MagneticButton from '../MagneticButton';
 
 export default function ServicesGrid() {
     return (
@@ -23,14 +24,34 @@ export default function ServicesGrid() {
                             <span className="uppercase tracking-[0.2em] text-xs font-bold">Our Core Expertise</span>
                         </motion.div>
                         <motion.h2
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.2 }}
+                            transition={{ duration: 0.1 }}
                             className="text-4xl md:text-6xl font-light text-stone-900 leading-tight"
                         >
-                            Tailored Solutions <br />
-                            <span className="font-serif italic text-stone-500">for Exceptional Living</span>
+                            <div className="overflow-hidden h-fit">
+                                <motion.span
+                                    initial={{ y: "100%" }}
+                                    whileInView={{ y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                                    className="block"
+                                >
+                                    Tailored Solutions
+                                </motion.span>
+                            </div>
+                            <div className="overflow-hidden h-fit">
+                                <motion.span
+                                    initial={{ y: "100%" }}
+                                    whileInView={{ y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+                                    className="block font-serif italic text-stone-500"
+                                >
+                                    for Exceptional Living
+                                </motion.span>
+                            </div>
                         </motion.h2>
                     </div>
                     <motion.div
@@ -93,16 +114,18 @@ export default function ServicesGrid() {
                                     </p>
 
                                     <div className="mt-auto">
-                                        <Link
-                                            href={`/services/${service.id}`}
-                                            scroll={false}
-                                            className="group/btn inline-flex items-center gap-4 text-stone-900 group-hover:text-amber-600 transition-colors duration-300"
-                                        >
-                                            <span className="text-xs uppercase font-bold tracking-[0.2em]">Explore Details</span>
-                                            <div className="relative w-10 h-10 rounded-full border border-stone-200 flex items-center justify-center group-hover/btn:border-amber-600 group-hover/btn:bg-amber-600 group-hover/btn:text-white transition-all duration-500">
-                                                <ArrowRight size={16} className="group-hover/btn:translate-x-0.5 transition-transform" />
-                                            </div>
-                                        </Link>
+                                        <MagneticButton strength={0.4}>
+                                            <Link
+                                                href={`/services/${service.id}`}
+                                                scroll={false}
+                                                className="group/btn inline-flex items-center gap-4 text-stone-900 group-hover:text-amber-600 transition-colors duration-300"
+                                            >
+                                                <span className="text-xs uppercase font-bold tracking-[0.2em]">Explore Details</span>
+                                                <div className="relative w-10 h-10 rounded-full border border-stone-200 flex items-center justify-center group-hover/btn:border-amber-600 group-hover/btn:bg-amber-600 group-hover/btn:text-white transition-all duration-500">
+                                                    <ArrowRight size={16} className="group-hover/btn:translate-x-0.5 transition-transform" />
+                                                </div>
+                                            </Link>
+                                        </MagneticButton>
                                     </div>
                                 </div>
 

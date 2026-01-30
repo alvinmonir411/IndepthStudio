@@ -140,10 +140,28 @@ export default function WhyChooseServices() {
                     </div>
 
                     <h2 className="text-5xl md:text-7xl lg:text-8xl font-light text-stone-900 mb-10">
-                        Elevating the Art <br />
-                        <span className="font-serif italic text-stone-500">
-                            of Living
-                        </span>
+                        <div className="overflow-hidden h-fit">
+                            <motion.span
+                                initial={{ y: "100%" }}
+                                whileInView={{ y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                                className="block"
+                            >
+                                Elevating the Art
+                            </motion.span>
+                        </div>
+                        <div className="overflow-hidden h-fit">
+                            <motion.span
+                                initial={{ y: "100%" }}
+                                whileInView={{ y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                                className="block font-serif italic text-stone-500"
+                            >
+                                of Living
+                            </motion.span>
+                        </div>
                     </h2>
 
                     <p className="text-stone-500 text-lg md:text-xl font-light leading-relaxed">

@@ -1,8 +1,10 @@
 'use client';
 
-import { motion, Variants } from 'framer-motion';
+import { motion, Variants, useScroll, useTransform } from 'framer-motion';
 import Image from 'next/image';
 import { MousePointer2 } from 'lucide-react';
+import { useRef } from 'react';
+import MagneticButton from '../MagneticButton';
 
 export default function ServicesHero() {
     const brandColor = '#C38822';
@@ -35,10 +37,20 @@ export default function ServicesHero() {
         },
     };
 
+    const heroRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: heroRef,
+        offset: ["start start", "end start"]
+    });
+
+    const yTransform = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
+    const opacityTransform = useTransform(scrollYProgress, [0, 0.8], [1, 0.5]);
+
     return (
-        <section className="relative w-full h-[90vh] flex items-center justify-center overflow-hidden bg-stone-950">
+        <section ref={heroRef} className="relative w-full h-[90vh] flex items-center justify-center overflow-hidden bg-stone-950">
             {/* Background Image with Parallax Effect */}
             <motion.div
+                style={{ y: yTransform, opacity: opacityTransform }}
                 initial={{ scale: 1.1 }}
                 animate={{ scale: 1 }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
@@ -79,8 +91,26 @@ export default function ServicesHero() {
                     className="text-6xl md:text-8xl lg:text-9xl font-light text-white leading-none tracking-tighter mb-8"
                     variants={itemVariants}
                 >
-                    Exquisite <br />
-                    <span className="font-serif italic text-amber-200/90 ml-4 md:ml-12">Services</span>
+                    <div className="overflow-hidden h-fit">
+                        <motion.span
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
+                            className="block"
+                        >
+                            Exquisite
+                        </motion.span>
+                    </div>
+                    <div className="overflow-hidden h-fit">
+                        <motion.span
+                            initial={{ y: "120%" }}
+                            animate={{ y: 0 }}
+                            transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1], delay: 0.6 }}
+                            className="block font-serif italic text-amber-200/90 ml-4 md:ml-12"
+                        >
+                            Services
+                        </motion.span>
+                    </div>
                 </motion.h1>
 
                 <motion.div
@@ -98,14 +128,16 @@ export default function ServicesHero() {
                 </motion.p>
 
                 <motion.div variants={itemVariants} className="flex items-center gap-8">
-                    <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="group relative px-10 py-5 bg-amber-600 text-white overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_-10px_rgba(195,136,34,0.5)] rounded-sm"
-                    >
-                        <span className="relative z-10 uppercase tracking-[0.2em] text-[10px] md:text-xs font-bold transition-transform duration-500 group-hover:translate-x-1 inline-block">Explore Our Work</span>
-                        <div className="absolute inset-0 bg-stone-900 translate-y-full group-hover:translate-y-0 transition-transform duration-[600ms] ease-[0.22,1,0.36,1]" />
-                    </motion.button>
+                    <MagneticButton>
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            className="group relative px-10 py-5 bg-amber-600 text-white overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_-10px_rgba(195,136,34,0.5)] rounded-sm"
+                        >
+                            <span className="relative z-10 uppercase tracking-[0.2em] text-[10px] md:text-xs font-bold transition-transform duration-500 group-hover:translate-x-1 inline-block">Explore Our Work</span>
+                            <div className="absolute inset-0 bg-stone-900 translate-y-full group-hover:translate-y-0 transition-transform duration-[600ms] ease-[0.22,1,0.36,1]" />
+                        </motion.button>
+                    </MagneticButton>
 
                     <motion.div
                         variants={itemVariants}

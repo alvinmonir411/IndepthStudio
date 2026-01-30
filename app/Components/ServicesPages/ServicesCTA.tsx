@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles, Send } from 'lucide-react';
+import MagneticButton from '../MagneticButton';
 import Link from 'next/link';
 
 export default function ServicesCTA() {
@@ -27,8 +28,28 @@ export default function ServicesCTA() {
                     </div>
 
                     <h2 className="text-5xl md:text-7xl lg:text-8xl font-light text-white leading-[1.1] mb-10 tracking-tight">
-                        Let’s Create Your <br />
-                        <span className="font-serif italic text-amber-500">Perfect</span> Space
+                        <div className="overflow-hidden h-fit">
+                            <motion.span
+                                initial={{ y: "100%" }}
+                                whileInView={{ y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                                className="block"
+                            >
+                                Let’s Create Your
+                            </motion.span>
+                        </div>
+                        <div className="overflow-hidden h-fit">
+                            <motion.span
+                                initial={{ y: "100%" }}
+                                whileInView={{ y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                                className="block font-serif italic text-amber-500"
+                            >
+                                Perfect Space
+                            </motion.span>
+                        </div>
                     </h2>
 
                     <p className="text-stone-400 text-lg md:text-xl font-light leading-relaxed mb-16 max-w-2xl mx-auto">
@@ -36,22 +57,17 @@ export default function ServicesCTA() {
                         to turn your architectural dreams into living reality.
                     </p>
 
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-                        <motion.div
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                        >
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-8">
+                        <MagneticButton>
                             <Link
                                 href="/contact"
-                                className="group relative px-10 py-5 bg-amber-600 text-white overflow-hidden transition-all duration-500 hover:shadow-[0_20px_40px_-10px_rgba(195,136,34,0.5)] rounded-sm flex items-center gap-3"
+                                className="group relative px-12 py-6 bg-amber-600 text-white overflow-hidden transition-all duration-500 hover:shadow-[0_20px_50px_-10px_rgba(195,136,34,0.5)] rounded-sm flex items-center gap-3"
                             >
                                 <span className="relative z-10 uppercase tracking-[0.25em] text-xs font-bold">Book a Consultation</span>
                                 <ArrowRight size={16} className="relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
                                 <div className="absolute inset-0 bg-stone-900 translate-y-full group-hover:translate-y-0 transition-transform duration-[600ms] ease-[0.22,1,0.36,1]" />
                             </Link>
-                        </motion.div>
-
-
+                        </MagneticButton>
                     </div>
 
                     <div className="mt-24 pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-center gap-12 grayscale opacity-40 hover:grayscale-0 hover:opacity-100 transition-all duration-700">

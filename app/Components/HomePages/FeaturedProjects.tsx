@@ -1,189 +1,147 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { projects, Project } from "@/app/projects/projectsData";
+import { ArrowUpRight, Cuboid } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const projects = [
-    {
-        id: 1,
-        title: "Ethereal Residence",
-        category: "Residential",
-        location: "Kyoto, Japan",
-        image: "/ResidentialInteriorDesign.jpg",
-        year: "2024",
-    },
-    {
-        id: 2,
-        title: "Nexus Workspace",
-        category: "Commercial",
-        location: "Berlin, Germany",
-        image: "/CommercialinteriorDesign.jpg",
-        year: "2023",
-    },
-    {
-        id: 3,
-        title: "Serenity Lounge",
-        category: "Hospitality",
-        location: "Bali, Indonesia",
-        image: "/heroImage.jpg",
-        year: "2024",
-    },
-    {
-        id: 4,
-        title: "Urban Loft",
-        category: "Residential",
-        location: "New York, USA",
-        image: "/AboutUs.jpg",
-        year: "2023",
-    },
-];
-
-const ProjectCard = ({ project, index }: { project: any; index: number }) => {
-    const cardRef = useRef<HTMLDivElement>(null);
+const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+    const cardRef = useRef(null);
 
     const { scrollYProgress } = useScroll({
         target: cardRef,
-        offset: ["start end", "end start"],
+        offset: ["start end", "end start"]
     });
 
-    const imageY = useTransform(scrollYProgress, [0, 1], [120, -120]);
-    const scale = useTransform(scrollYProgress, [0, 0.5, 1], [0.94, 1, 0.96]);
-    const opacity = useTransform(scrollYProgress, [0, 0.15, 0.9, 1], [0, 1, 1, 0]);
-
     const isEven = index % 2 === 0;
-
-    return (
-        <div
-            ref={cardRef}
-            className={`flex w-full mb-40 md:mb-56 ${isEven ? "justify-start" : "justify-end"
-                } relative`}
-        >
-            <motion.div
-                style={{ scale, opacity }}
-                className="w-full md:w-[75%] lg:w-[65%] relative z-10 group"
-            >
-                {/* IMAGE */}
-                <div className="relative aspect-[4/3] md:aspect-[16/10] overflow-hidden rounded-sm">
-                    <motion.div
-                        style={{ y: imageY }}
-                        className="relative w-full h-[120%] -top-[10%]"
-                    >
-                        <Image
-                            src={project.image}
-                            alt={project.title}
-                            fill
-                            className="object-cover transition-transform duration-[1200ms] group-hover:scale-105"
-                        />
-                    </motion.div>
-                </div>
-
-                {/* INFO CARD */}
-                <motion.div
-                    initial={{ y: 40, opacity: 0 }}
-                    whileInView={{ y: 0, opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
-                    className={`absolute -bottom-14 ${isEven ? "-right-6 md:-right-16" : "-left-6 md:-left-16"
-                        } z-20 bg-white p-8 md:p-10 shadow-2xl w-[90%] md:w-auto`}
-                >
-                    <div className="flex items-center gap-4 mb-4 text-xs font-mono uppercase tracking-widest text-amber-600">
-                        <span>{project.category}</span>
-                        <span className="w-1 h-1 bg-black/20 rounded-full" />
-                        <span className="text-black/50">{project.year}</span>
-                    </div>
-
-                    <h3 className="text-3xl md:text-5xl font-serif text-black mb-2 leading-none">
-                        {project.title}
-                    </h3>
-
-                    <p className="text-stone-600 text-sm mb-6">{project.location}</p>
-
-                    <MagneticButton>
-                        <Link
-                            href="/projects"
-                            className="flex items-center gap-3 text-black group/btn"
-                        >
-                            <span className="uppercase tracking-widest text-xs font-bold group-hover/btn:text-amber-600 transition-colors">
-                                View Case Study
-                            </span>
-                            <div className="p-2 border border-black/20 rounded-full group-hover/btn:bg-amber-500 group-hover/btn:border-amber-500 transition-all duration-300">
-                                <ArrowUpRight className="w-4 h-4 text-black" />
-                            </div>
-                        </Link>
-                    </MagneticButton>
-                </motion.div>
-
-                {/* BIG INDEX NUMBER */}
-                <div
-                    className={`absolute -top-24 ${isEven ? "-left-20" : "-right-20"
-                        } -z-10`}
-                >
-                    <span className="text-[14rem] md:text-[22rem] font-serif leading-none text-black/[0.04] select-none">
-                        0{project.id}
-                    </span>
-                </div>
-            </motion.div>
-        </div>
-    );
-};
-
-const MagneticButton = ({ children }: { children: React.ReactNode }) => {
-    const ref = useRef<HTMLDivElement>(null);
-    const [pos, setPos] = useState({ x: 0, y: 0 });
+    const yTransform = useTransform(scrollYProgress, [0, 1], [isEven ? -30 : 30, isEven ? 30 : -30]);
 
     return (
         <motion.div
-            ref={ref}
-            onMouseMove={(e) => {
-                const rect = ref.current?.getBoundingClientRect();
-                if (!rect) return;
-                setPos({
-                    x: (e.clientX - (rect.left + rect.width / 2)) * 0.3,
-                    y: (e.clientY - (rect.top + rect.height / 2)) * 0.3,
-                });
-            }}
-            onMouseLeave={() => setPos({ x: 0, y: 0 })}
-            animate={pos}
-            transition={{ type: "spring", stiffness: 120, damping: 14 }}
-            className="inline-block"
+            ref={cardRef}
+            style={{ y: yTransform }}
+            className={`w-full ${isEven ? 'md:mt-0' : 'md:mt-24'}`}
+        // Removed variants={projectVariant} to keep it simple or I can define it above
         >
-            {children}
+            <Link href={`/projects/${project.id}`} className="group block relative">
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[3rem] bg-stone-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] group-hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700">
+                    <Image
+                        src={project.image}
+                        alt={project.title}
+                        fill
+                        className="object-cover transition-transform duration-[1.5s] ease-[0.22,1,0.36,1] group-hover:scale-110"
+                    />
+
+                    {/* Glassmorphic Caption Card */}
+                    <div className="absolute inset-x-6 bottom-6 z-20">
+                        <div className="p-8 rounded-[2.5rem] bg-white/10 backdrop-blur-2xl border border-white/20 text-white transform translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-700 ease-[0.22,1,0.36,1]">
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="text-[10px] uppercase tracking-[0.3em] font-bold text-amber-200">
+                                    {project.category}
+                                </span>
+                                <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                                    <ArrowUpRight className="w-4 h-4" />
+                                </div>
+                            </div>
+                            <h3 className="text-2xl font-medium mb-2 tracking-tight">
+                                {project.title}
+                            </h3>
+                            <p className="text-sm text-white/70 font-light leading-relaxed">
+                                {project.caption}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Minimalist Overlay */}
+                    <div className="absolute inset-0 bg-stone-950/0 group-hover:bg-stone-950/20 transition-colors duration-700" />
+                </div>
+
+                {/* Info Text below card */}
+                <div className="mt-8 px-4 flex justify-between items-start">
+                    <div className="space-y-1">
+                        <h4 className="text-xl font-medium text-stone-900 group-hover:text-amber-600 transition-colors duration-500">
+                            {project.title}
+                        </h4>
+                        <div className="flex items-center gap-2 text-stone-400 text-xs uppercase tracking-widest font-bold">
+                            <span>{project.category}</span>
+                            <span className="w-1 h-1 bg-stone-300 rounded-full" />
+                            <span>Project 0{project.id}</span>
+                        </div>
+                    </div>
+                </div>
+            </Link>
         </motion.div>
     );
 };
 
 const FeaturedProjects = () => {
     return (
-        <section className="bg-[#FDF8F3] py-32 relative overflow-hidden">
-            <div className="max-w-[1400px] mx-auto px-6 md:px-12">
+        <section className="bg-[#FDF8F3] py-32 md:py-48 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-6 md:px-12">
                 {/* HEADER */}
-                <div className="flex flex-col items-center text-center mb-32">
-                    <motion.span
+                <div className="flex flex-col md:flex-row items-end justify-between mb-24 gap-8">
+                    <motion.div
+                        initial={{ opacity: 0, x: -30 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1 }}
+                        className="max-w-2xl"
+                    >
+                        <div className="flex items-center gap-4 mb-6">
+                            <Cuboid className="text-amber-600 w-5 h-5" />
+                            <span className="uppercase tracking-[0.4em] text-xs font-bold text-stone-500">
+                                Selected Masterpieces
+                            </span>
+                        </div>
+                        <h2 className="text-5xl md:text-7xl font-light text-stone-900 leading-[1.1] tracking-tight">
+                            <div className="overflow-hidden h-fit">
+                                <motion.span
+                                    initial={{ y: "100%" }}
+                                    whileInView={{ y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                                    className="block"
+                                >
+                                    Design that <span className="font-serif italic text-amber-600">Transcends</span>
+                                </motion.span>
+                            </div>
+                            <div className="overflow-hidden h-fit">
+                                <motion.span
+                                    initial={{ y: "100%" }}
+                                    whileInView={{ y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                                    className="block"
+                                >
+                                    The Ordinary
+                                </motion.span>
+                            </div>
+                        </h2>
+                    </motion.div>
+
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="text-amber-600 uppercase tracking-[0.35em] text-xs font-bold mb-6 border border-amber-600/30 px-5 py-2 rounded-full"
+                        transition={{ duration: 1, delay: 0.3 }}
+                        className="pb-4"
                     >
-                        Selected Masterpieces
-                    </motion.span>
-
-                    <motion.h2
-                        initial={{ opacity: 0, y: 80, rotateX: 20 }}
-                        whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] as const }}
-                        className="text-6xl md:text-9xl font-serif text-black leading-[0.85] tracking-tight"
-                    >
-                        Design that <br />
-                        <span className="text-black/20">Transcends</span>
-                    </motion.h2>
+                        <Link
+                            href="/projects"
+                            className="group flex items-center gap-4 text-stone-900 hover:text-amber-600 transition-colors"
+                        >
+                            <span className="uppercase tracking-widest text-xs font-extrabold">View All Portfolio</span>
+                            <div className="w-12 h-12 rounded-full border border-stone-200 flex items-center justify-center group-hover:bg-amber-600 group-hover:border-amber-600 group-hover:text-white transition-all duration-500">
+                                <ArrowUpRight className="w-5 h-5" />
+                            </div>
+                        </Link>
+                    </motion.div>
                 </div>
 
-                {/* PROJECTS */}
-                <div className="flex flex-col items-center">
-                    {projects.map((project, index) => (
+                {/* PROJECTS GRID */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24 md:gap-y-32">
+                    {projects.filter(p => p.isFeatured).map((project, index) => (
                         <ProjectCard
                             key={project.id}
                             project={project}
@@ -191,60 +149,6 @@ const FeaturedProjects = () => {
                         />
                     ))}
                 </div>
-
-                {/* CTA */}
-                <div className="flex justify-center relative z-20">
-                    <MagneticButton>
-                        <Link
-                            href="/projects"
-                            className="
-        relative
-        group
-        flex
-        items-center
-        justify-center
-        gap-2
-        px-14
-        h-[64px]
-        rounded-full
-        bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900
-        hover:from-amber-600 hover:via-orange-600 hover:to-pink-600
-        text-white
-        font-bold
-        uppercase
-        tracking-widest
-        text-sm
-        overflow-hidden
-        leading-none
-        shadow-2xl
-        border border-white/10
-        transition-all duration-500
-      "
-                        >
-                            {/* TEXT */}
-                            <span className="relative z-20 flex items-center gap-2 pointer-events-none">
-                                View Full Portfolio
-                                <ArrowUpRight className="w-4 h-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:translate-x-1" />
-                            </span>
-
-                            {/* HOVER OVERLAY */}
-                            <span
-                                className="
-          absolute
-          inset-0
-          z-10
-          bg-amber-500
-          translate-y-full
-          group-hover:translate-y-0
-          transition-transform
-          duration-500
-          ease-[0.2,1,0.3,1]
-        "
-                            />
-                        </Link>
-                    </MagneticButton>
-                </div>
-
             </div>
         </section>
     );

@@ -58,7 +58,28 @@ export default function ServiceRelatedProjects() {
                             </span>
                         </div>
                         <h2 className="text-5xl md:text-7xl font-light text-stone-900 leading-[1.1] tracking-tight">
-                            Realizing <span className="font-serif italic text-amber-600">Visionary</span> <br /> Concepts
+                            <div className="overflow-hidden h-fit">
+                                <motion.span
+                                    initial={{ y: "100%" }}
+                                    whileInView={{ y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
+                                    className="block"
+                                >
+                                    Realizing <span className="font-serif italic text-amber-600">Visionary</span>
+                                </motion.span>
+                            </div>
+                            <div className="overflow-hidden h-fit">
+                                <motion.span
+                                    initial={{ y: "100%" }}
+                                    whileInView={{ y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 }}
+                                    className="block"
+                                >
+                                    Concepts
+                                </motion.span>
+                            </div>
                         </h2>
                     </motion.div>
 
@@ -89,7 +110,7 @@ export default function ServiceRelatedProjects() {
                     viewport={{ once: true }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24 md:gap-y-32"
                 >
-                    {projects.map((project, index) => (
+                    {projects.filter(p => !p.isFeatured).map((project, index) => (
                         <ProjectCard key={project.id} project={project} index={index} />
                     ))}
                 </motion.div>

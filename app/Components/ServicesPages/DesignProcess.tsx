@@ -3,6 +3,8 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Users, Palette, Box, Hammer, Award, Sparkles, MoveRight } from 'lucide-react';
 import { useRef } from 'react';
+import MagneticButton from '../MagneticButton';
+import Link from 'next/link';
 
 const steps = [
     {
@@ -134,6 +136,19 @@ const EditorialSection = ({ step, index, total }: { step: any; index: number; to
                             {step.desc}
                         </p>
 
+                        <div className="pt-4">
+                            <MagneticButton strength={0.2}>
+                                <Link
+                                    href={step.link}
+                                    className="flex items-center gap-3 text-stone-900 group/link"
+                                >
+                                    <span className="uppercase tracking-[0.2em] text-[10px] font-bold">Explore Phase</span>
+                                    <div className="p-2 border border-stone-200 rounded-full group-hover/link:bg-amber-600 group-hover/link:border-amber-600 group-hover/link:text-white transition-all duration-500">
+                                        <MoveRight size={14} />
+                                    </div>
+                                </Link>
+                            </MagneticButton>
+                        </div>
                     </motion.div>
 
                     {/* Right Side: Visual Image Element */}

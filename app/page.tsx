@@ -4,6 +4,7 @@ import ScrollStackImages from "./Components/HomePages/ScrollStackImages";
 import WhyElegance from "./Components/HomePages/WhyElegance";
 import WhyChooseUs from "./Components/HomePages/WhyChooseUs";
 import FeaturedProjects from "./Components/HomePages/FeaturedProjects";
+import LatestJournal from "./Components/HomePages/LatestJournal";
 import BeforeAfterSlider from "./Components/HomePages/BeforeAfterSlider";
 import AchievementsSection from "./Components/HomePages/AchievementsSection";
 import ClientTestimonials from "./Components/HomePages/ClientTestimonials";
@@ -18,6 +19,7 @@ export default function Home() {
       <WhyElegance />
       <WhyChooseUs />
       <FeaturedProjects />
+      <LatestJournal />
 
       {/* Transformation Showcase Section */}
       <section className="relative w-full py-20 px-6 overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
