@@ -26,11 +26,9 @@ export async function sendContactEmail(formData: {
         subject: `New Project Inquiry: ${projectType} from ${fullName}`,
         text: `
             New Contact Form Submission:
-            
             Full Name: ${fullName}
             Email: ${email}
             Project Type: ${projectType}
-            
             Message/Vision:
             ${message}
         `,

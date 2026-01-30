@@ -1,6 +1,7 @@
 "use client"
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export const Banner = () => {
     return (
@@ -55,13 +56,13 @@ export const Banner = () => {
                         transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
                         className="flex flex-col sm:flex-row gap-6"
                     >
-                        <button className="group bg-amber-600 rounded-full text-white px-8 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-amber-700 transition-all duration-300 flex items-center justify-center sm:justify-start">
+                        <Link href="/contact" className="group bg-amber-600 rounded-full text-white px-8 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-amber-700 transition-all duration-300 flex items-center justify-center sm:justify-start">
                             Book Free Consultation
                             <ArrowRight className="ml-3 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-                        </button>
-                        <button className="bg-transparent border rounded-full border-stone-500 text-stone-200 px-8 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-white hover:text-black hover:border-white transition-all duration-300 backdrop-blur-sm">
+                        </Link>
+                        <Link href="/projects" className="bg-transparent border rounded-full border-stone-500 text-stone-200 px-8 py-4 uppercase tracking-widest text-xs font-semibold hover:bg-white hover:text-black hover:border-white transition-all duration-300 backdrop-blur-sm">
                             View Our Projects
-                        </button>
+                        </Link>
                     </motion.div>
                 </div>
             </div>

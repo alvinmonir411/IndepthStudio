@@ -6,27 +6,19 @@ import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motio
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
-const slides = [
-    {
-        img: "/ResidentialInteriorDesign.jpg",
-        subheading: "01 / RESIDENTIAL",
-        title: "Serene Urban Retreat",
-        description: "Where modern comfort meets peaceful sophistication in the heart of the city.",
-    },
-    {
-        img: "/CommercialinteriorDesign.jpg",
-        subheading: "03 / COMMERCIAL",
-        title: "Modern Corporate Elegance",
-        description: "Redefining workspace dynamics with timeless style and functional innovation.",
-    },
-    {
-        img: "/ResidentialInteriorDesign.jpg",
-        subheading: "02 / COASTAL",
-        title: "Luxurious Coastal Living",
-        description: "Bringing the endless beauty and calm of the shore into your everyday home.",
-    },
+import { projects } from "../../projects/projectsData";
 
-];
+// Filter for featured projects to show on the homepage
+const featuredProjects = projects.filter(p => p.isFeatured).slice(0, 3);
+
+// Map internal project data to local slide format
+const slides = featuredProjects.map((p, i) => ({
+    id: p.id,
+    img: p.image,
+    subheading: `${String(i + 1).padStart(2, '0')} / ${p.category.toUpperCase()}`,
+    title: p.title,
+    description: p.caption,
+}));
 
 const ScrollStackImages = () => {
     const containerRef = useRef(null);
@@ -116,10 +108,10 @@ const Card = ({ slide, index, total }: { slide: any; index: number; total: numbe
                             {slide.description}
                         </p>
 
-                        <button className="group inline-flex items-center gap-3 bg-white/95 text-[#5C4033] px-9 py-4 rounded-full text-[11px] font-semibold uppercase tracking-[0.25em] hover:bg-white transition-all duration-300">
+                        <Link href={`/projects/${slide.id}`} className="group inline-flex items-center gap-3 bg-white/95 text-[#5C4033] px-9 py-4 rounded-full text-[11px] font-semibold uppercase tracking-[0.25em] hover:bg-white transition-all duration-300">
                             View Project
                             <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                        </button>
+                        </Link>
                     </div>
                 </motion.div>
 
