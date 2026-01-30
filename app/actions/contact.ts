@@ -13,16 +13,16 @@ export async function sendContactEmail(formData: {
     // SMTP Configuration
     // IMPORTANT: You need to set these environment variables in your .env file
     const transporter = nodemailer.createTransport({
-        service: 'gmail', // Or your preferred service
+        service: 'gmail',
         auth: {
             user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS, // Use an App Password for Gmail
+            pass: process.env.EMAIL_PASS,
         },
     });
 
     const mailOptions = {
         from: process.env.EMAIL_USER,
-        to: process.env.CEO_EMAIL || 'ceo@indepthstudio.com', // CEO's Email
+        to: process.env.CEO_EMAIL || 'ceo@indepthstudio.com',
         subject: `New Project Inquiry: ${projectType} from ${fullName}`,
         text: `
             New Contact Form Submission:
