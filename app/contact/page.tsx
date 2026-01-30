@@ -17,16 +17,32 @@ import {
     MessageSquare,
     Compass
 } from 'lucide-react';
+import { sendContactEmail } from '../actions/contact';
 
 export default function ContactPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        setIsSubmitted(true);
+
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            fullName: formData.get('fullName') as string,
+            email: formData.get('email') as string,
+            projectType: formData.get('projectType') as string,
+            message: formData.get('message') as string,
+        };
+
+        const result = await sendContactEmail(data);
+
+        if (result.success) {
+            setIsSubmitted(true);
+        } else {
+            alert('Something went wrong. Please try again.');
+        }
+
         setLoading(false);
     };
 
@@ -119,14 +135,15 @@ export default function ContactPage() {
                                 {!isSubmitted ? (
                                     <motion.form key="form" exit={{ opacity: 0, y: -20 }} onSubmit={handleSubmit} className="relative z-10 space-y-12">
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
-                                            <InputField label="Full Name" placeholder="Indepth Studio" required />
-                                            <InputField label="Email Address" placeholder="IndepthStudio@example.com" type="email" required />
+                                            <InputField name="fullName" label="Full Name" placeholder="Indepth Studio" required />
+                                            <InputField name="email" label="Email Address" placeholder="IndepthStudio@example.com" type="email" required />
                                         </div>
                                         <div className="relative group">
-                                            <InputField label="Project Type" placeholder="Residential, Commercial, Interior Architecture..." />
+                                            <InputField name="projectType" label="Project Type" placeholder="Residential, Commercial, Interior Architecture..." />
                                         </div>
                                         <div className="relative group">
                                             <textarea
+                                                name="message"
                                                 rows={4}
                                                 className="w-full bg-transparent py-4 outline-none border-b border-stone-200 focus:border-amber-600 transition-all text-stone-800 font-light resize-none placeholder:text-stone-300"
                                                 placeholder="Share your architectural vision or specific requirements..."
@@ -224,10 +241,11 @@ function ContactMethod({ icon, label, value, delay }: { icon: React.ReactNode; l
     );
 }
 
-function InputField({ label, placeholder, type = "text", required = false }: { label: string; placeholder: string; type?: string; required?: boolean }) {
+function InputField({ label, placeholder, name, type = "text", required = false }: { label: string; placeholder: string; name: string; type?: string; required?: boolean }) {
     return (
         <div className="relative group w-full">
             <input
+                name={name}
                 type={type}
                 required={required}
                 placeholder={placeholder}
