@@ -23,7 +23,7 @@ export default function ServicesOverview() {
     ];
 
     return (
-        <section className="py-24 md:py-32 bg-white overflow-hidden">
+        <section className="py-24 md:py-32 bg-[#FDF8F3] overflow-hidden">
             <div className="container mx-auto px-6 md:px-12">
                 <div className="max-w-4xl mx-auto text-center mb-20">
                     <motion.div
@@ -70,39 +70,47 @@ export default function ServicesOverview() {
                     </motion.p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-16">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
                     {services.map((item, index) => (
                         <motion.div
                             key={index}
                             initial={{ opacity: 0, y: 40 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ duration: 0.8, delay: 0.4 + (index * 0.2) }}
+                            transition={{ duration: 0.8, delay: 0.2 + (index * 0.1) }}
                             className="group relative"
                         >
-                            <div className="relative z-10 p-10 rounded-3xl bg-stone-50 transition-all duration-500 group-hover:bg-white group-hover:shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-stone-100 group-hover:border-amber-100 flex flex-col h-full">
-                                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-8 shadow-sm group-hover:bg-amber-600 group-hover:text-white transition-all duration-500 rotate-3 group-hover:rotate-0">
-                                    <item.icon className="w-8 h-8 text-amber-600 group-hover:text-white transition-colors duration-500" />
+                            <div className="relative z-10 p-12 rounded-[3.5rem] bg-white transition-all duration-700 group-hover:-translate-y-4 border border-stone-100 group-hover:border-amber-200/50 flex flex-col h-full shadow-[0_10px_40px_-20px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.1)]">
+                                {/* Unique Icon Container */}
+                                <div className="relative w-20 h-20 mb-10">
+                                    <div className="absolute inset-0 bg-amber-600/10 rounded-3xl rotate-12 group-hover:rotate-0 group-hover:bg-amber-600 transition-all duration-700" />
+                                    <div className="relative w-full h-full bg-white rounded-3xl border border-stone-100 flex items-center justify-center shadow-sm group-hover:bg-amber-600 group-hover:border-amber-600 transition-all duration-700">
+                                        <item.icon className="w-9 h-9 text-amber-600 group-hover:text-white transition-colors duration-700" />
+                                    </div>
+
+                                    {/* Liquid Glow Effect */}
+                                    <div className="absolute -inset-4 bg-amber-600/20 rounded-full blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 -z-10" />
                                 </div>
 
-                                <h3 className="text-2xl font-medium text-stone-900 mb-4 group-hover:text-amber-600 transition-colors">
+                                <h3 className="text-3xl font-medium text-stone-900 mb-6 group-hover:text-amber-600 transition-colors">
                                     {item.title}
                                 </h3>
 
-                                <p className="text-stone-500 font-light leading-relaxed mb-6 flex-grow">
+                                <p className="text-stone-500 font-light leading-relaxed text-lg mb-8 flex-grow">
                                     {item.desc}
                                 </p>
 
-                                <div className="flex items-center text-amber-600 font-semibold text-sm tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-[-10px] group-hover:translate-x-0">
-                                    Learn More <span className="ml-2">→</span>
+                                <div className="pt-6 border-t border-stone-50">
+                                    <div className="flex items-center gap-3 text-amber-600 font-bold text-xs tracking-[0.2em] uppercase">
+                                        <span>Excellence Guaranteed</span>
+                                        <div className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-pulse" />
+                                    </div>
                                 </div>
                             </div>
-
-                            {/* Decorative background element */}
-                            <div className="absolute top-4 left-4 right-4 bottom-4 bg-amber-600/5 rounded-3xl -z-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl" />
                         </motion.div>
                     ))}
                 </div>
+
             </div>
         </section>
     );

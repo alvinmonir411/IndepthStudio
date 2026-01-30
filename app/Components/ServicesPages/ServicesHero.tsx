@@ -98,19 +98,24 @@ export default function ServicesHero() {
                 </motion.p>
 
                 <motion.div variants={itemVariants} className="flex items-center gap-8">
-                    <button
-                        className="group relative px-8 py-4 bg-amber-600 text-white overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(195,136,34,0.4)]"
+                    <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="group relative px-10 py-5 bg-amber-600 text-white overflow-hidden transition-all duration-300 hover:shadow-[0_20px_40px_-10px_rgba(195,136,34,0.5)] rounded-sm"
                     >
-                        <span className="relative z-10 uppercase tracking-widest text-xs font-bold">Explore Our Work</span>
-                        <div className="absolute inset-0 bg-amber-700 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                    </button>
+                        <span className="relative z-10 uppercase tracking-[0.2em] text-[10px] md:text-xs font-bold transition-transform duration-500 group-hover:translate-x-1 inline-block">Explore Our Work</span>
+                        <div className="absolute inset-0 bg-stone-900 translate-y-full group-hover:translate-y-0 transition-transform duration-[600ms] ease-[0.22,1,0.36,1]" />
+                    </motion.button>
 
-                    <div className="hidden sm:flex items-center gap-3 text-stone-500 group cursor-pointer hover:text-stone-300 transition-colors">
-                        <div className="p-2 border border-stone-800 rounded-full group-hover:border-stone-600 transition-colors">
-                            <MousePointer2 size={16} />
+                    <motion.div
+                        variants={itemVariants}
+                        className="hidden sm:flex items-center gap-4 text-stone-500 group cursor-pointer hover:text-amber-500 transition-all duration-500"
+                    >
+                        <div className="p-3 border border-stone-800 rounded-full group-hover:border-amber-500/50 group-hover:bg-amber-500/5 transition-all duration-500">
+                            <MousePointer2 size={14} className="group-hover:rotate-12 transition-transform duration-500" />
                         </div>
-                        <span className="text-xs uppercase tracking-widest font-medium">Scroll to discover</span>
-                    </div>
+                        <span className="text-[10px] uppercase tracking-[0.3em] font-bold">Scroll to discover</span>
+                    </motion.div>
                 </motion.div>
             </motion.div>
 
