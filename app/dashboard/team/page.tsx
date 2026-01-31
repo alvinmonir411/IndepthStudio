@@ -17,11 +17,13 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getDashboardRole } from '@/app/actions/dashboard';
+import { toast } from 'react-toastify';
 
 export default function TeamListPage() {
     const router = useRouter();
     const [team, setTeam] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [userRole, setUserRole] = useState<string | null>(null);
 
     const fetchTeam = async () => {
         setIsLoading(true);
@@ -33,10 +35,11 @@ export default function TeamListPage() {
     useEffect(() => {
         async function init() {
             const role = await getDashboardRole();
-            if (!role || (role !== 'super-admin' && role !== 'admin')) {
+            if (!role) {
                 router.push('/dashboard');
                 return;
             }
+            setUserRole(role);
             fetchTeam();
         }
         init();
@@ -46,9 +49,10 @@ export default function TeamListPage() {
         if (confirm('Are you sure you want to remove this team member?')) {
             const result = await deleteTeamMember(id);
             if (result.success) {
+                toast.success('Team member removed');
                 fetchTeam();
             } else {
-                alert(result.error);
+                toast.error(result.error);
             }
         }
     };
@@ -64,20 +68,22 @@ export default function TeamListPage() {
                             className="flex items-center gap-3 px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl hover:bg-zinc-800 transition-all group"
                         >
                             <ArrowLeft className="w-5 h-5 text-zinc-400 group-hover:text-amber-500 transition-colors" />
-                            <span className="text-sm font-bold text-zinc-500 group-hover:text-white transition-colors">Dashboard</span>
+                            <span className="text-sm font-bold text-zinc-500 group-hover:text-white transition-colors">Back to Dashboard</span>
                         </Link>
                         <div>
                             <h1 className="text-2xl font-bold tracking-tight">Team Roster</h1>
                             <p className="text-zinc-500 text-sm">Manage the creative minds behind Indepth Studio.</p>
                         </div>
                     </div>
-                    <Link
-                        href="/dashboard/team/new"
-                        className="flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-2xl transition-all shadow-xl shadow-amber-500/20 active:scale-95"
-                    >
-                        <Plus className="w-5 h-5" />
-                        <span>Add Member</span>
-                    </Link>
+                    {userRole === 'super-admin' && (
+                        <Link
+                            href="/dashboard/team/new"
+                            className="flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-2xl transition-all shadow-xl shadow-amber-500/20 active:scale-95"
+                        >
+                            <Plus className="w-5 h-5" />
+                            <span>Add Member</span>
+                        </Link>
+                    )}
                 </div>
             </header>
 
@@ -92,9 +98,11 @@ export default function TeamListPage() {
                             <Users className="w-20 h-20 text-zinc-900 mb-6" />
                             <h4 className="text-xl font-bold mb-2">The roster is empty</h4>
                             <p className="text-zinc-500 mb-8 max-w-sm">Welcome new designers, architects, and visionaries to your team.</p>
-                            <Link href="/dashboard/team/new" className="text-amber-500 font-black hover:bg-amber-500/5 px-8 py-3 rounded-2xl border border-amber-500/20 transition-all uppercase text-xs tracking-widest">
-                                Add First Member
-                            </Link>
+                            {userRole === 'super-admin' && (
+                                <Link href="/dashboard/team/new" className="text-amber-500 font-black hover:bg-amber-500/5 px-8 py-3 rounded-2xl border border-amber-500/20 transition-all uppercase text-xs tracking-widest">
+                                    Add First Member
+                                </Link>
+                            )}
                         </div>
                     ) : (
                         team.map((member) => (
@@ -116,22 +124,33 @@ export default function TeamListPage() {
                                     )}
 
                                     {/* Action Hover */}
-                                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 flex items-center justify-center gap-4 backdrop-blur-sm">
-                                        <Link
-                                            href={`/dashboard/team/edit/${member._id}`}
-                                            className="p-4 bg-white text-black hover:bg-amber-500 hover:text-white rounded-2xl shadow-2xl transition-all active:scale-90"
-                                            title="Edit Profile"
-                                        >
-                                            <Edit3 className="w-6 h-6" />
-                                        </Link>
-                                        <button
-                                            onClick={() => handleDelete(member._id)}
-                                            className="p-4 bg-white text-black hover:bg-red-500 hover:text-white rounded-2xl shadow-2xl transition-all active:scale-90"
-                                            title="Remove Member"
-                                        >
-                                            <Trash2 className="w-6 h-6" />
-                                        </button>
-                                    </div>
+                                    {userRole && (
+                                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0 flex items-center justify-center gap-4 backdrop-blur-sm">
+                                            {userRole !== 'agent' && (
+                                                <Link
+                                                    href={`/dashboard/team/edit/${member._id}`}
+                                                    className="p-4 bg-white text-black hover:bg-amber-500 hover:text-white rounded-2xl shadow-2xl transition-all active:scale-90"
+                                                    title="Edit Profile"
+                                                >
+                                                    <Edit3 className="w-6 h-6" />
+                                                </Link>
+                                            )}
+                                            {(userRole === 'super-admin' || userRole === 'admin') && (
+                                                <button
+                                                    onClick={() => handleDelete(member._id)}
+                                                    className="p-4 bg-white text-black hover:bg-red-500 hover:text-white rounded-2xl shadow-2xl transition-all active:scale-90"
+                                                    title="Remove Member"
+                                                >
+                                                    <Trash2 className="w-6 h-6" />
+                                                </button>
+                                            )}
+                                            {userRole === 'agent' && (
+                                                <div className="text-white font-bold text-xs uppercase tracking-widest bg-black/60 px-4 py-2 rounded-xl backdrop-blur-md">
+                                                    View Only
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="p-8 flex-1 flex flex-col">

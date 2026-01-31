@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "./Components/Navbar/Navbar";
-import Footer from "./Components/HomePages/Footer";
-import SmoothScroll from "./Components/SmoothScroll";
-import CustomCursor from "./Components/CustomCursor";
-import FloatingContact from "./Components/Common/FloatingContact";
-
+import ConditionalLayout from "./Components/ConditionalLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,14 +30,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SmoothScroll>
-          <CustomCursor />
-          <Navbar />
-          {children}
-          {modal}
-          <Footer />
-          <FloatingContact />
-        </SmoothScroll>
+        <ConditionalLayout children={children} modal={modal} />
       </body>
     </html>
   );

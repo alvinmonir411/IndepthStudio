@@ -18,6 +18,7 @@ import {
     Compass
 } from 'lucide-react';
 import { sendContactEmail } from '../actions/contact';
+import { toast } from 'react-toastify';
 
 export default function ContactPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -31,6 +32,7 @@ export default function ContactPage() {
         const data = {
             fullName: formData.get('fullName') as string,
             email: formData.get('email') as string,
+            phone: formData.get('phone') as string,
             projectType: formData.get('projectType') as string,
             message: formData.get('message') as string,
         };
@@ -39,8 +41,9 @@ export default function ContactPage() {
 
         if (result.success) {
             setIsSubmitted(true);
+            toast.success('Message sent! We will get back to you soon.');
         } else {
-            alert('Something went wrong. Please try again.');
+            toast.error('Something went wrong. Please try again.');
         }
 
         setLoading(false);
@@ -137,9 +140,8 @@ export default function ContactPage() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
                                             <InputField name="fullName" label="Full Name" placeholder="Indepth Studio" required />
                                             <InputField name="email" label="Email Address" placeholder="IndepthStudio@example.com" type="email" required />
-                                        </div>
-                                        <div className="relative group">
-                                            <InputField name="projectType" label="Project Type" placeholder="Residential, Commercial, Interior Architecture..." />
+                                            <InputField name="phone" label="Phone Number" placeholder="+1 (555) 000-0000" type="tel" />
+                                            <InputField name="projectType" label="Project Type" placeholder="Residential, Commercial..." />
                                         </div>
                                         <div className="relative group">
                                             <textarea

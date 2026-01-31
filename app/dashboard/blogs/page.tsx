@@ -18,9 +18,11 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getDashboardRole } from '@/app/actions/dashboard';
+import { toast } from 'react-toastify';
 
 export default function BlogsListPage() {
     const router = useRouter();
+    const [role, setRole] = useState<string | null>(null);
     const [blogs, setBlogs] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -34,23 +36,26 @@ export default function BlogsListPage() {
 
     useEffect(() => {
         async function init() {
-            const role = await getDashboardRole();
-            if (!role) {
+            const currentRole = await getDashboardRole();
+            if (!currentRole) {
                 router.push('/dashboard');
                 return;
             }
+            setRole(currentRole);
             fetchBlogs();
         }
         init();
     }, [router]);
 
     const handleDelete = async (id: string) => {
+        if (role === 'agent') return;
         if (confirm('Are you sure you want to delete this article? This will remove it from the public blog.')) {
             const result = await deleteBlog(id);
             if (result.success) {
+                toast.success('Article deleted successfully');
                 fetchBlogs();
             } else {
-                alert(result.error);
+                toast.error(result.error);
             }
         }
     };
@@ -161,13 +166,15 @@ export default function BlogsListPage() {
                                         <Edit3 className="w-4 h-4" />
                                         Edit
                                     </Link>
-                                    <button
-                                        onClick={() => handleDelete(blog._id)}
-                                        className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all font-bold text-sm shadow-xl"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                        Delete
-                                    </button>
+                                    {role !== 'agent' && (
+                                        <button
+                                            onClick={() => handleDelete(blog._id)}
+                                            className="flex-1 lg:flex-none flex items-center justify-center gap-2 px-6 py-3 bg-zinc-950 border border-zinc-800 text-zinc-400 hover:text-red-500 hover:bg-red-500/10 rounded-2xl transition-all font-bold text-sm shadow-xl"
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                            Delete
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         ))

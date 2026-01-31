@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, LayoutDashboard, ShieldCheck, UserCog, User } from 'lucide-react';
 
 export default function DashboardLogin({ onLogin }: { onLogin: (role: string) => void }) {
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +17,7 @@ export default function DashboardLogin({ onLogin }: { onLogin: (role: string) =>
         setError('');
 
         try {
-            const result = await loginAction(password);
+            const result = await loginAction(password, username);
             if (result.success && result.role) {
                 onLogin(result.role);
             } else {
@@ -41,15 +42,28 @@ export default function DashboardLogin({ onLogin }: { onLogin: (role: string) =>
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-amber-500/10 blur-[100px] pointer-events-none" />
 
                 <div className="flex flex-col items-center mb-8 text-center relative z-10">
-                    <div className="w-16 h-16 bg-zinc-800 rounded-2xl flex items-center justify-center mb-4 border border-zinc-700 shadow-inner">
-                        <LayoutDashboard className="w-8 h-8 text-amber-500" />
+                    <div className="w-16 h-16 bg-zinc-800 rounded-2xl flex items-center justify-center mb-4 border border-zinc-700 shadow-inner overflow-hidden">
+                        <img src="/Logo.jpeg" alt="Logo" className="w-full h-full object-cover" />
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-2">Indepth Studio</h1>
                     <p className="text-zinc-400">Secure Dashboard Access</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
-                    <div className="space-y-2">
+                <form onSubmit={handleSubmit} className="space-y-4 relative z-10">
+                    <div className="space-y-4">
+                        <div className="relative group">
+                            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-amber-500 text-zinc-500">
+                                <User className="w-5 h-5" />
+                            </div>
+                            <input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Username (optional for legacy)..."
+                                className="w-full pl-12 pr-4 py-4 bg-zinc-800/50 border border-zinc-700 rounded-2xl text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-amber-500/50 focus:border-amber-500 transition-all"
+                            />
+                        </div>
+
                         <div className="relative group">
                             <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none transition-colors group-focus-within:text-amber-500 text-zinc-500">
                                 <Lock className="w-5 h-5" />

@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import { getDashboardRole, logoutAction, getDashboardStats } from '@/app/actions/dashboard';
+import { usePathname, useRouter } from 'next/navigation';
+import { getDashboardRole, logoutAction, getDashboardStats, getAdminNote, updateTeamNote } from '@/app/actions/dashboard';
 import DashboardLogin from '@/app/Components/Dashboard/Login';
 import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'react-toastify';
 import {
     LayoutDashboard,
     LogOut,
-    Users,
     Briefcase,
     ShieldCheck,
     User,
@@ -17,18 +18,29 @@ import {
     Database,
     FileText,
     TrendingUp,
-    Users as UsersIcon,
+    Users,
     Layers,
-    LucideIcon
+    LucideIcon,
+    Settings,
+    Eye,
+    Menu,
+    X,
+    StickyNote,
+    Mail as MailIcon
 } from 'lucide-react';
 import { seedDataAction } from '@/app/actions/seed';
 import Link from 'next/link';
 
 export default function DashboardPage() {
+    const pathname = usePathname();
+    const router = useRouter();
     const [role, setRole] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [stats, setStats] = useState<any>(null);
     const [activities, setActivities] = useState<any[]>([]);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [adminNote, setAdminNote] = useState('');
+    const [isEditingNote, setIsEditingNote] = useState(false);
 
     useEffect(() => {
         async function init() {
@@ -36,11 +48,16 @@ export default function DashboardPage() {
             setRole(currentRole);
 
             if (currentRole) {
-                const data = await getDashboardStats();
-                if (data.success) {
-                    setStats(data.stats);
-                    setActivities(data.recentActivity ?? []);
+                const [dashData, noteData] = await Promise.all([
+                    getDashboardStats(),
+                    getAdminNote()
+                ]);
+
+                if (dashData.success) {
+                    setStats(dashData.stats);
+                    setActivities(dashData.recentActivity ?? []);
                 }
+                setAdminNote(noteData);
             }
             setIsLoading(false);
         }
@@ -54,6 +71,16 @@ export default function DashboardPage() {
     const handleLogout = async () => {
         await logoutAction();
         setRole(null);
+    };
+
+    const handleNoteSave = async () => {
+        const result = await updateTeamNote(adminNote);
+        if (result.success) {
+            setIsEditingNote(false);
+            toast.success('Studio broadcast updated');
+        } else {
+            toast.error(result.error);
+        }
     };
 
     if (isLoading) {
@@ -70,11 +97,16 @@ export default function DashboardPage() {
 
     return (
         <div className="min-h-screen bg-zinc-950 text-white font-sans selection:bg-amber-500/30">
-            {/* Sidebar */}
-            <div className="fixed inset-y-0 left-0 w-64 bg-zinc-900 border-r border-zinc-800 p-6 flex flex-col hidden lg:flex">
+            {/* Sidebar toggle */}
+            <div
+                className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-all duration-300 ${isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            <div className={`fixed inset-y-0 left-0 w-64 bg-zinc-900 border-r border-zinc-800 p-6 flex flex-col z-50 transition-transform duration-300 lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
                 <div className="flex items-center gap-3 mb-10 px-2">
-                    <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
-                        <LayoutDashboard className="w-6 h-6 text-black" />
+                    <div className="w-10 h-10 bg-amber-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20 overflow-hidden">
+                        <img src="/Logo.jpeg" alt="Logo" className="w-full h-full object-cover" />
                     </div>
                     <div>
                         <h2 className="font-bold text-lg leading-tight">Indepth</h2>
@@ -86,29 +118,56 @@ export default function DashboardPage() {
                     <NavItem
                         icon={<LayoutDashboard className="w-5 h-5" />}
                         label="Overview"
-                        active={true}
                         href="/dashboard"
+                        active={pathname === '/dashboard'}
+                        onClick={() => setIsMobileMenuOpen(false)}
                     />
                     <NavItem
                         icon={<Briefcase className="w-5 h-5" />}
                         label="Projects"
                         href="/dashboard/projects"
+                        active={pathname?.startsWith('/dashboard/projects')}
+                        onClick={() => setIsMobileMenuOpen(false)}
                     />
                     <NavItem
                         icon={<ShieldCheck className="w-5 h-5" />}
                         label="Services"
                         href="/dashboard/services"
+                        active={pathname?.startsWith('/dashboard/services')}
+                        onClick={() => setIsMobileMenuOpen(false)}
                     />
                     <NavItem
                         icon={<FileText className="w-5 h-5" />}
                         label="Blogs"
                         href="/dashboard/blogs"
+                        active={pathname?.startsWith('/dashboard/blogs')}
+                        onClick={() => setIsMobileMenuOpen(false)}
                     />
                     {(role === 'admin' || role === 'super-admin') && (
                         <NavItem
                             icon={<Users className="w-5 h-5" />}
                             label="Team Members"
                             href="/dashboard/team"
+                            active={pathname?.startsWith('/dashboard/team')}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        />
+                    )}
+                    {(role === 'admin' || role === 'super-admin') && (
+                        <NavItem
+                            icon={<MailIcon className="w-5 h-5" />}
+                            label="Inquiries (Leads)"
+                            href="/dashboard/leads"
+                            active={pathname?.startsWith('/dashboard/leads')}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                        />
+                    )}
+                    {role === 'super-admin' && (
+                        <NavItem
+                            icon={<Settings className="w-5 h-5" />}
+                            label="User Management"
+                            href="/dashboard/users"
+                            active={pathname?.startsWith('/dashboard/users')}
+                            onClick={() => setIsMobileMenuOpen(false)}
                         />
                     )}
                 </nav>
@@ -137,17 +196,33 @@ export default function DashboardPage() {
             <main className="lg:pl-64 min-h-screen">
                 <header className="sticky top-0 z-20 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 px-6 lg:px-10 py-6">
                     <div className="flex items-center justify-between max-w-7xl mx-auto w-full">
-                        <div>
-                            <h1 className="text-2xl font-bold">
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setIsMobileMenuOpen(true)}
+                                className="p-2 -ml-2 lg:hidden text-zinc-400 hover:text-white"
+                            >
+                                <Menu className="w-6 h-6" />
+                            </button>
+                            <h1 className="text-xl lg:text-2xl font-bold truncate">
                                 Welcome, {role?.split('-').map(s => s[0].toUpperCase() + s.slice(1)).join(' ')}
                             </h1>
-                            <p className="text-zinc-500 text-sm mt-1">Here's what's happening today at Indepth Studio.</p>
                         </div>
                         <div className="flex items-center gap-4">
+                            <Link
+                                href="/"
+                                className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all text-sm font-bold"
+                            >
+                                <Eye className="w-4 h-4" />
+                                <span>View Site</span>
+                            </Link>
                             {role === 'super-admin' && <SeedButton />}
                             <button className="p-2.5 bg-zinc-900 border border-zinc-800 rounded-xl relative hover:bg-zinc-800 transition-colors">
                                 <Bell className="w-5 h-5 text-zinc-400" />
-                                <span className="absolute top-2 right-2 w-2 h-2 bg-amber-500 rounded-full border-2 border-zinc-950" />
+                                {stats?.newLeads > 0 && (
+                                    <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-amber-500 text-black text-[10px] font-black rounded-full border-2 border-zinc-950 flex items-center justify-center animate-bounce">
+                                        {stats.newLeads}
+                                    </span>
+                                )}
                             </button>
                         </div>
                     </div>
@@ -157,6 +232,37 @@ export default function DashboardPage() {
                     {/* Hero Section */}
                     <section className="relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-zinc-950 to-zinc-950 border border-zinc-800 rounded-[3rem] p-10 lg:p-16">
                         <div className="relative z-10 max-w-2xl">
+                            {/* Super Admin Note Section */}
+                            <div className="mb-10 bg-zinc-900/40 backdrop-blur-md border border-amber-500/20 rounded-[2rem] p-8 shadow-2xl relative group overflow-hidden">
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-3 text-amber-500">
+                                        <StickyNote className="w-5 h-5" />
+                                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Studio Broadcast</span>
+                                    </div>
+                                    <button
+                                        onClick={() => isEditingNote ? handleNoteSave() : setIsEditingNote(true)}
+                                        className="px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-full text-[10px] font-bold uppercase tracking-widest transition-all"
+                                    >
+                                        {isEditingNote ? 'Post to Studio' : 'Update Broadcast'}
+                                    </button>
+                                </div>
+                                {isEditingNote ? (
+                                    <textarea
+                                        value={adminNote}
+                                        onChange={(e) => setAdminNote(e.target.value)}
+                                        className="w-full bg-zinc-950 border border-zinc-800 rounded-2xl p-4 text-sm text-zinc-300 focus:outline-none focus:border-amber-500/50 min-h-[100px] font-medium"
+                                        placeholder="Enter a message for all dashboard users..."
+                                    />
+                                ) : (
+                                    <p className="text-zinc-300 text-lg leading-relaxed font-serif italic">
+                                        {adminNote || "No active studio broadcasts at the moment."}
+                                    </p>
+                                )}
+                                <div className="absolute -right-4 -bottom-4 opacity-5 pointer-events-none">
+                                    <StickyNote className="w-24 h-24 text-amber-500" />
+                                </div>
+                            </div>
+
                             <h2 className="text-4xl lg:text-5xl font-black mb-6 leading-tight">Your Digital Studio <br /><span className="text-amber-500">Command Center</span></h2>
                             <p className="text-zinc-400 text-lg mb-10 leading-relaxed font-medium">Manage your professional portfolio, services, and team from one unified interface designed for efficiency and visual impact.</p>
                             <div className="flex flex-wrap gap-4">
@@ -166,6 +272,11 @@ export default function DashboardPage() {
                                 <Link href="/dashboard/blogs/new" className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-black rounded-2xl transition-all active:scale-95">
                                     Write Article
                                 </Link>
+                                {role === 'super-admin' && (
+                                    <Link href="/dashboard/users/new" className="px-8 py-4 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-600/30 font-black rounded-2xl transition-all active:scale-95 flex items-center gap-2">
+                                        Add New User
+                                    </Link>
+                                )}
                             </div>
                         </div>
                         <div className="absolute top-1/2 -right-20 -translate-y-1/2 w-96 h-96 bg-amber-500/10 rounded-full blur-[120px] pointer-events-none" />
@@ -196,11 +307,29 @@ export default function DashboardPage() {
                         />
                         <QuickAccessCard
                             icon={Users}
-                            label="Team"
+                            label="Our Team"
                             count={stats ? `${stats.team} Members` : 'Loading...'}
                             href="/dashboard/team"
-                            color="text-purple-500"
+                            color="text-emerald-500"
                         />
+                        {(role === 'admin' || role === 'super-admin') && (
+                            <QuickAccessCard
+                                icon={MailIcon}
+                                label="Inquiries"
+                                count={stats ? `${stats.leads} Leads` : 'Loading...'}
+                                href="/dashboard/leads"
+                                color="text-amber-500"
+                            />
+                        )}
+                        {role === 'super-admin' && (
+                            <QuickAccessCard
+                                icon={Users}
+                                label="Users"
+                                count="Manage Access"
+                                href="/dashboard/users"
+                                color="text-blue-500"
+                            />
+                        )}
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
@@ -240,10 +369,11 @@ export default function DashboardPage() {
     );
 }
 
-function NavItem({ icon, label, active = false, href }: { icon: React.ReactNode, label: string, active?: boolean, href: string }) {
+function NavItem({ icon, label, active = false, href, onClick }: { icon: React.ReactNode, label: string, active?: boolean, href: string, onClick?: () => void }) {
     return (
         <Link
             href={href}
+            onClick={onClick}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all group ${active ? 'bg-amber-500 text-black font-bold shadow-lg shadow-amber-500/20' : 'text-zinc-400 hover:text-white hover:bg-zinc-800/50'}`}
         >
             <span className={active ? '' : 'group-hover:text-amber-500 transition-colors'}>{icon}</span>

@@ -27,7 +27,7 @@ export async function getTeamMembers() {
 export async function addTeamMember(memberData: any) {
     try {
         const role = await checkAuth();
-        if (role !== 'super-admin' && role !== 'admin') throw new Error('Unauthorized');
+        if (role !== 'super-admin') throw new Error('Unauthorized: Only Super Admins can add team members');
 
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
@@ -46,7 +46,7 @@ export async function addTeamMember(memberData: any) {
 export async function updateTeamMember(id: string, memberData: any) {
     try {
         const role = await checkAuth();
-        if (role !== 'super-admin' && role !== 'admin') throw new Error('Unauthorized');
+        if (role !== 'super-admin') throw new Error('Unauthorized: Only Super Admins can update team members');
 
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
@@ -64,12 +64,15 @@ export async function updateTeamMember(id: string, memberData: any) {
 export async function deleteTeamMember(id: string) {
     try {
         const role = await checkAuth();
-        if (role !== 'super-admin') throw new Error('Only Super Admins can delete team members');
+        if (role !== 'super-admin' && role !== 'admin') {
+            throw new Error('Only Super Admins and Admins can delete team members');
+        }
 
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
         await db.collection('team').deleteOne({ _id: new ObjectId(id) });
         revalidatePath('/dashboard');
+        revalidatePath('/');
         return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };

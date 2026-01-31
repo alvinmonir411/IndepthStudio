@@ -86,13 +86,16 @@ export async function updateBlog(id: string, blogData: any) {
 export async function deleteBlog(id: string) {
     try {
         const role = await checkAuth();
-        if (role !== 'super-admin') throw new Error('Only Super Admins can delete blogs');
+        if (role !== 'super-admin' && role !== 'admin') {
+            throw new Error('Only Super Admins and Admins can delete blogs');
+        }
 
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
         await db.collection('blogs').deleteOne({ _id: new ObjectId(id) });
         revalidatePath('/dashboard');
         revalidatePath('/blog');
+        revalidatePath('/');
         return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };

@@ -60,12 +60,38 @@ export async function updateProject(id: string, projectData: any) {
 export async function deleteProject(id: string) {
     try {
         const role = await checkAuth();
-        if (role !== 'super-admin') throw new Error('Only Super Admins can delete projects');
+        if (role !== 'super-admin' && role !== 'admin') {
+            throw new Error('Only Super Admins and Admins can delete projects');
+        }
 
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
         await db.collection('projects').deleteOne({ _id: new ObjectId(id) });
         revalidatePath('/dashboard');
+        revalidatePath('/projects');
+        revalidatePath('/');
+        return { success: true };
+    } catch (error: any) {
+        return { success: false, error: error.message };
+    }
+}
+
+export async function toggleProjectFeatured(id: string, isFeatured: boolean) {
+    try {
+        const role = await checkAuth();
+        if (role !== 'super-admin' && role !== 'admin') {
+            throw new Error('Only Super Admins and Admins can feature projects');
+        }
+
+        const client = await clientPromise;
+        const db = client.db(process.env.DB_NAME);
+        await db.collection('projects').updateOne(
+            { _id: new ObjectId(id) },
+            { $set: { isFeatured, updatedAt: new Date() } }
+        );
+        revalidatePath('/dashboard');
+        revalidatePath('/projects');
+        revalidatePath('/');
         return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };

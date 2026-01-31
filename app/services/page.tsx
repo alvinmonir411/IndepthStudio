@@ -7,11 +7,14 @@ import ServiceRelatedProjects from '@/app/Components/ServicesPages/ServiceRelate
 import DesignProcess from '@/app/Components/ServicesPages/DesignProcess'
 import ServicesCTA from '@/app/Components/ServicesPages/ServicesCTA'
 import { getServices } from '@/app/actions/services'
+import { getProjects } from '@/app/actions/projects'
 
 export const revalidate = 3600;
 
 export default async function ServicesPage() {
     const services = await getServices();
+    const allProjects = await getProjects();
+    const featuredProjects = allProjects.filter((p: any) => p.isFeatured);
 
     return (
         <main className="bg-stone-950 min-h-screen">
@@ -19,7 +22,7 @@ export default async function ServicesPage() {
             <ServicesOverview />
             <ServicesGrid services={services} />
             <WhyChooseServices />
-            <ServiceRelatedProjects />
+            <ServiceRelatedProjects projects={featuredProjects} />
             <DesignProcess />
             <ServicesCTA />
         </main>

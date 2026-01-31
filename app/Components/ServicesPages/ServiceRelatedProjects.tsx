@@ -38,7 +38,7 @@ const projectVariant: Variants = {
     }
 };
 
-export default function ServiceRelatedProjects() {
+export default function ServiceRelatedProjects({ projects }: { projects: any[] }) {
     return (
         <section className="py-32 md:py-48 bg-[#FDF8F3] overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -110,8 +110,8 @@ export default function ServiceRelatedProjects() {
                     viewport={{ once: true }}
                     className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24 md:gap-y-32"
                 >
-                    {projects.filter(p => !p.isFeatured).map((project, index) => (
-                        <ProjectCard key={project.id} project={project} index={index} />
+                    {projects.map((project, index) => (
+                        <ProjectCard key={project._id} project={project} index={index} />
                     ))}
                 </motion.div>
             </div>
@@ -119,7 +119,7 @@ export default function ServiceRelatedProjects() {
     );
 }
 
-function ProjectCard({ project, index }: { project: Project; index: number }) {
+function ProjectCard({ project, index }: { project: any; index: number }) {
     const cardRef = useRef(null);
 
     // Parallax effect: even items shift down, odd items shift up slightly
@@ -138,10 +138,10 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             style={{ y: yTransform }}
             className={`w-full ${isEven ? 'md:mt-0' : 'md:mt-24'}`}
         >
-            <Link href={`/projects/${project.id}`} className="group block relative">
+            <Link href={`/projects/${project._id}`} className="group block relative">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-[3rem] bg-stone-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] group-hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700">
                     <Image
-                        src={project.image}
+                        src={project.imageUrl || project.image || '/placeholder-project.jpg'}
                         alt={project.title}
                         fill
                         className="object-cover transition-transform duration-[1.5s] ease-[0.22,1,0.36,1] group-hover:scale-110"

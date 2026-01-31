@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
-import { blogPosts } from '../../blog/blogData';
 
 const LatestJournal = ({ posts }: { posts: any[] }) => {
     return (

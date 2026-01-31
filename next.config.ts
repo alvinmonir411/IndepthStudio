@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
       }
     ],
   },
+  serverExternalPackages: ['mongodb', 'nodemailer'],
 };
 
 export default nextConfig;

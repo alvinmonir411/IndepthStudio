@@ -6,21 +6,15 @@ import { motion, useScroll, useTransform, useMotionTemplate } from "framer-motio
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 
-import { projects } from "../../projects/projectsData";
-
-// Filter for featured projects to show on the homepage
-const featuredProjects = projects.filter(p => p.isFeatured).slice(0, 3);
-
-// Map internal project data to local slide format
-const slides = featuredProjects.map((p, i) => ({
-    id: p.id,
-    img: p.image,
-    subheading: `${String(i + 1).padStart(2, '0')} / ${p.category.toUpperCase()}`,
-    title: p.title,
-    description: p.caption,
-}));
-
-const ScrollStackImages = () => {
+const ScrollStackImages = ({ projects }: { projects: any[] }) => {
+    // Map internal project data to local slide format
+    const slides = projects.map((p, i) => ({
+        id: p._id,
+        img: p.imageUrl || p.image || '/placeholder-project.jpg',
+        subheading: `${String(i + 1).padStart(2, '0')} / ${p.category?.toUpperCase() || 'RESIDENTIAL'}`,
+        title: p.title,
+        description: p.caption || p.description,
+    }));
     const containerRef = useRef(null);
     const { scrollYProgress } = useScroll({
         target: containerRef,

@@ -17,6 +17,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getDashboardRole } from '@/app/actions/dashboard';
+import { toast } from 'react-toastify';
 
 const ServiceIcon = ({ icon, className }: { icon: string, className?: string }) => {
     switch (icon) {
@@ -31,6 +32,7 @@ const ServiceIcon = ({ icon, className }: { icon: string, className?: string }) 
 
 export default function ServicesListPage() {
     const router = useRouter();
+    const [role, setRole] = useState<string | null>(null);
     const [services, setServices] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -43,23 +45,26 @@ export default function ServicesListPage() {
 
     useEffect(() => {
         async function init() {
-            const role = await getDashboardRole();
-            if (!role) {
+            const currentRole = await getDashboardRole();
+            if (!currentRole) {
                 router.push('/dashboard');
                 return;
             }
+            setRole(currentRole);
             fetchServices();
         }
         init();
     }, [router]);
 
     const handleDelete = async (id: string) => {
+        if (role === 'agent') return;
         if (confirm('Are you sure you want to delete this service?')) {
             const result = await deleteService(id);
             if (result.success) {
+                toast.success('Service deleted successfully');
                 fetchServices();
             } else {
-                alert(result.error);
+                toast.error(result.error);
             }
         }
     };
@@ -125,12 +130,14 @@ export default function ServicesListPage() {
                                             >
                                                 <Edit3 className="w-4 h-4" />
                                             </Link>
-                                            <button
-                                                onClick={() => handleDelete(service._id)}
-                                                className="p-3 bg-zinc-950 border border-zinc-800 text-zinc-500 hover:text-red-500 hover:border-red-500/30 rounded-xl transition-all active:scale-90"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
+                                            {role !== 'agent' && (
+                                                <button
+                                                    onClick={() => handleDelete(service._id)}
+                                                    className="p-3 bg-zinc-950 border border-zinc-800 text-zinc-500 hover:text-red-500 hover:border-red-500/30 rounded-xl transition-all active:scale-90"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                     <h4 className="text-xl font-bold mb-3 group-hover:text-amber-500 transition-colors">{service.title}</h4>

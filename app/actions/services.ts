@@ -72,12 +72,16 @@ export async function updateService(id: string, serviceData: any) {
 export async function deleteService(id: string) {
     try {
         const role = await checkAuth();
-        if (role !== 'super-admin') throw new Error('Only Super Admins can delete services');
+        if (role !== 'super-admin' && role !== 'admin') {
+            throw new Error('Only Super Admins and Admins can delete services');
+        }
 
         const client = await clientPromise;
         const db = client.db(process.env.DB_NAME);
         await db.collection('services').deleteOne({ _id: new ObjectId(id) });
         revalidatePath('/dashboard');
+        revalidatePath('/services');
+        revalidatePath('/');
         return { success: true };
     } catch (error: any) {
         return { success: false, error: error.message };

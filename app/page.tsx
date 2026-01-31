@@ -15,7 +15,9 @@ export const revalidate = 3600;
 
 export default async function Home() {
   const allProjects = await getProjects();
-  const featuredProjects = allProjects.filter((p: any) => p.isFeatured).slice(0, 4);
+  const featuredProjects = allProjects.filter((p: any) => p.isFeatured);
+  const scrollProjects = featuredProjects.slice(0, 3);
+  const gridProjects = featuredProjects.slice(0, 4);
   const allBlogs = await getBlogs();
   const latestBlogs = allBlogs.slice(0, 2);
 
@@ -23,10 +25,10 @@ export default async function Home() {
     <main className="w-full min-h-screen bg-zinc-50 font-sans dark:bg-black">
       <Banner />
       <AboutSection />
-      <ScrollStackImages />
+      <ScrollStackImages projects={scrollProjects} />
       <WhyElegance />
       <WhyChooseUs />
-      <FeaturedProjects projects={featuredProjects} />
+      <FeaturedProjects projects={gridProjects} />
       <LatestJournal posts={latestBlogs} />
 
       {/* Transformation Showcase Section */}

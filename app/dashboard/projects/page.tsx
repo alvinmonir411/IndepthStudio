@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { getProjects, deleteProject } from '@/app/actions/projects';
+import { getProjects, deleteProject, toggleProjectFeatured } from '@/app/actions/projects';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Plus,
@@ -12,14 +12,17 @@ import {
     Search,
     Filter,
     LayoutGrid,
-    List as ListIcon
+    List as ListIcon,
+    Star
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { getDashboardRole } from '@/app/actions/dashboard';
+import { toast } from 'react-toastify';
 
 export default function ProjectsListPage() {
     const router = useRouter();
+    const [role, setRole] = useState<string | null>(null);
     const [projects, setProjects] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -34,24 +37,38 @@ export default function ProjectsListPage() {
 
     useEffect(() => {
         async function init() {
-            const role = await getDashboardRole();
-            if (!role) {
+            const currentRole = await getDashboardRole();
+            if (!currentRole) {
                 router.push('/dashboard');
                 return;
             }
+            setRole(currentRole);
             fetchProjects();
         }
         init();
     }, [router]);
 
     const handleDelete = async (id: string) => {
+        if (!role || role === 'agent') return;
         if (confirm('Are you sure you want to delete this project? This action cannot be undone.')) {
             const result = await deleteProject(id);
             if (result.success) {
+                toast.success('Project deleted successfully');
                 fetchProjects();
             } else {
-                alert(result.error);
+                toast.error(result.error);
             }
+        }
+    };
+
+    const handleToggleFeatured = async (id: string, currentStatus: boolean) => {
+        if (role === 'agent') return;
+        const result = await toggleProjectFeatured(id, !currentStatus);
+        if (result.success) {
+            toast.success('Project visibility updated');
+            fetchProjects();
+        } else {
+            toast.error(result.error);
         }
     };
 
@@ -177,11 +194,21 @@ export default function ProjectsListPage() {
                                                 </span>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <div className="flex items-center gap-2">
-                                                    <div className={`w-2 h-2 rounded-full ${project.isFeatured ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
-                                                    <span className="text-xs font-bold text-zinc-300">
-                                                        {project.isFeatured ? 'Featured' : 'Published'}
-                                                    </span>
+                                                <div className="flex items-center gap-3">
+                                                    <button
+                                                        onClick={() => handleToggleFeatured(project._id, project.isFeatured)}
+                                                        className={`p-1.5 rounded-lg transition-all ${project.isFeatured ? 'text-amber-500 bg-amber-500/10 border border-amber-500/20' : 'text-zinc-600 hover:text-zinc-400'}`}
+                                                        title={project.isFeatured ? 'Unfeature Project' : 'Feature Project'}
+                                                        disabled={role === 'agent'}
+                                                    >
+                                                        <Star className={`w-4 h-4 ${project.isFeatured ? 'fill-amber-500' : ''}`} />
+                                                    </button>
+                                                    <div className="flex items-center gap-2">
+                                                        <div className={`w-2 h-2 rounded-full ${project.isFeatured ? 'bg-amber-500 animate-pulse' : 'bg-emerald-500'}`} />
+                                                        <span className="text-xs font-bold text-zinc-300">
+                                                            {project.isFeatured ? 'Featured' : 'Published'}
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6 text-right space-x-3">
@@ -191,12 +218,14 @@ export default function ProjectsListPage() {
                                                 >
                                                     <Edit3 className="w-5 h-5" />
                                                 </Link>
-                                                <button
-                                                    onClick={() => handleDelete(project._id)}
-                                                    className="p-3 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-xl border border-transparent hover:border-red-500/20 transition-all active:scale-90"
-                                                >
-                                                    <Trash2 className="w-5 h-5" />
-                                                </button>
+                                                {role !== 'agent' && (
+                                                    <button
+                                                        onClick={() => handleDelete(project._id)}
+                                                        className="p-3 text-zinc-500 hover:text-red-500 hover:bg-red-500/10 rounded-xl border border-transparent hover:border-red-500/20 transition-all active:scale-90"
+                                                    >
+                                                        <Trash2 className="w-5 h-5" />
+                                                    </button>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -216,15 +245,25 @@ export default function ProjectsListPage() {
                                             </div>
                                         )}
                                         <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-all translate-y-2 group-hover:translate-y-0">
+                                            <button
+                                                onClick={() => handleToggleFeatured(project._id, project.isFeatured)}
+                                                className={`p-3 bg-black/60 backdrop-blur-md rounded-2xl border transition-all ${project.isFeatured ? 'text-amber-500 border-amber-500/30' : 'text-white border-white/10 hover:text-amber-500'}`}
+                                                disabled={role === 'agent'}
+                                            >
+                                                <Star className={`w-5 h-5 ${project.isFeatured ? 'fill-amber-500' : ''}`} />
+                                            </button>
                                             <Link href={`/dashboard/projects/edit/${project._id}`} className="p-3 bg-black/60 backdrop-blur-md text-white hover:text-amber-500 rounded-2xl border border-white/10 transition-all">
                                                 <Edit3 className="w-5 h-5" />
                                             </Link>
-                                            <button onClick={() => handleDelete(project._id)} className="p-3 bg-black/60 backdrop-blur-md text-white hover:text-red-500 rounded-2xl border border-white/10 transition-all">
-                                                <Trash2 className="w-5 h-5" />
-                                            </button>
+                                            {role !== 'agent' && (
+                                                <button onClick={() => handleDelete(project._id)} className="p-3 bg-black/60 backdrop-blur-md text-white hover:text-red-500 rounded-2xl border border-white/10 transition-all">
+                                                    <Trash2 className="w-5 h-5" />
+                                                </button>
+                                            )}
                                         </div>
                                         {project.isFeatured && (
-                                            <div className="absolute top-4 left-4 px-3 py-1 bg-amber-500 text-black text-[10px] font-black uppercase rounded-lg shadow-xl">
+                                            <div className="absolute top-4 left-4 px-3 py-1 bg-amber-500 text-black text-[10px] font-black uppercase rounded-lg shadow-xl flex items-center gap-1.5">
+                                                <Star className="w-3 h-3 fill-black" />
                                                 Featured
                                             </div>
                                         )}
