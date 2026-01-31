@@ -82,25 +82,27 @@ export default function ProjectsListPage() {
             {/* Header */}
             <header className="sticky top-0 z-20 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 px-6 lg:px-10 py-6">
                 <div className="flex items-center justify-between max-w-7xl mx-auto w-full">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 lg:gap-4 overflow-hidden">
                         <Link
                             href="/dashboard"
-                            className="flex items-center gap-3 px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl hover:bg-zinc-800 transition-all group"
+                            className="flex items-center gap-3 px-3 lg:px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl hover:bg-zinc-800 transition-all group shrink-0"
+                            title="Back to Dashboard"
                         >
                             <ArrowLeft className="w-5 h-5 text-zinc-400 group-hover:text-amber-500 transition-colors" />
-                            <span className="text-sm font-bold text-zinc-500 group-hover:text-white transition-colors">Dashboard</span>
+                            <span className="text-sm font-bold text-zinc-500 group-hover:text-white transition-colors hidden sm:inline">Dashboard</span>
                         </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold tracking-tight">Project Management</h1>
-                            <p className="text-zinc-500 text-sm">Organize and showcase your architectural masterpieces.</p>
+                        <div className="overflow-hidden">
+                            <h1 className="text-xl lg:text-2xl font-bold tracking-tight truncate">Projects</h1>
+                            <p className="text-zinc-500 text-xs truncate hidden sm:block">Manage your portfolio masterpieces.</p>
                         </div>
                     </div>
                     <Link
                         href="/dashboard/projects/new"
-                        className="flex items-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-2xl transition-all shadow-xl shadow-amber-500/20 active:scale-95"
+                        className="flex items-center gap-2 px-4 lg:px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-2xl transition-all shadow-xl shadow-amber-500/20 active:scale-95 shrink-0"
+                        title="New Project"
                     >
                         <Plus className="w-5 h-5" />
-                        <span>New Project</span>
+                        <span className="hidden sm:inline">New Project</span>
                     </Link>
                 </div>
             </header>

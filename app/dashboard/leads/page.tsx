@@ -81,21 +81,22 @@ export default function LeadsListPage() {
         <div className="min-h-screen bg-zinc-950 text-white font-sans selection:bg-amber-500/30 pb-20">
             <header className="sticky top-0 z-20 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 px-6 lg:px-10 py-6">
                 <div className="flex flex-col md:flex-row md:items-center justify-between max-w-7xl mx-auto w-full gap-6">
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-3 lg:gap-4 overflow-hidden">
                         <Link
                             href="/dashboard"
-                            className="flex items-center gap-3 px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl hover:bg-zinc-800 transition-all group"
+                            className="flex items-center gap-3 px-3 lg:px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl hover:bg-zinc-800 transition-all group shrink-0"
+                            title="Back"
                         >
                             <ArrowLeft className="w-5 h-5 text-zinc-400 group-hover:text-amber-500 transition-colors" />
-                            <span className="text-sm font-bold text-zinc-500 group-hover:text-white transition-colors">Back</span>
+                            <span className="text-sm font-bold text-zinc-500 group-hover:text-white transition-colors hidden sm:inline">Back</span>
                         </Link>
-                        <div>
-                            <h1 className="text-2xl font-bold tracking-tight">Contact Inquiries</h1>
-                            <p className="text-zinc-500 text-sm">Manage potential project leads.</p>
+                        <div className="overflow-hidden">
+                            <h1 className="text-xl lg:text-2xl font-bold tracking-tight truncate">Inquiries</h1>
+                            <p className="text-zinc-500 text-xs truncate hidden sm:block">Manage project leads.</p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-2 bg-zinc-900 p-1.5 rounded-2xl border border-zinc-800">
+                    <div className="flex items-center gap-1.5 lg:gap-2 bg-zinc-900 p-1.5 rounded-2xl border border-zinc-800 overflow-x-auto no-scrollbar max-w-full">
                         <FilterTab active={filterStatus === 'all'} label="All" onClick={() => setFilterStatus('all')} />
                         <FilterTab active={filterStatus === 'new'} label="New" count={leads.filter(l => l.status === 'new').length} onClick={() => setFilterStatus('new')} />
                         <FilterTab active={filterStatus === 'contacted'} label="Contacted" onClick={() => setFilterStatus('contacted')} />
@@ -163,15 +164,15 @@ export default function LeadsListPage() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
-                                    <div className="md:col-span-1 p-6 bg-zinc-950 border border-zinc-800 rounded-3xl">
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 relative z-10">
+                                    <div className="lg:col-span-1 p-5 lg:p-6 bg-zinc-950 border border-zinc-800 rounded-[2rem]">
                                         <div className="flex items-center gap-3 text-amber-500 mb-4">
                                             <Briefcase className="w-4 h-4" />
                                             <span className="text-[10px] font-black uppercase tracking-[0.2em]">Project Type</span>
                                         </div>
                                         <p className="text-lg font-bold text-zinc-300">{lead.projectType || 'Not specified'}</p>
                                     </div>
-                                    <div className="md:col-span-2 p-6 bg-zinc-950/50 border border-zinc-800 rounded-3xl group-hover:border-amber-500/20 transition-all">
+                                    <div className="lg:col-span-2 p-5 lg:p-6 bg-zinc-950/50 border border-zinc-800 rounded-[2rem] group-hover:border-amber-500/20 transition-all">
                                         <div className="flex items-center gap-3 text-amber-500 mb-4">
                                             <MessageSquare className="w-4 h-4" />
                                             <span className="text-[10px] font-black uppercase tracking-[0.2em]">The Vision</span>
@@ -198,12 +199,12 @@ function FilterTab({ label, active, onClick, count }: { label: string, active: b
     return (
         <button
             onClick={onClick}
-            className={`px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${active ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'text-zinc-500 hover:text-zinc-300'}`}
+            className={`px-4 lg:px-6 py-2 rounded-xl text-[9px] lg:text-[10px] font-black uppercase tracking-widest transition-all shrink-0 ${active ? 'bg-amber-500 text-black shadow-lg shadow-amber-500/20' : 'text-zinc-500 hover:text-zinc-300'}`}
         >
             <span className="flex items-center gap-2">
                 {label}
                 {count !== undefined && count > 0 && (
-                    <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[8px] ${active ? 'bg-black text-amber-500' : 'bg-amber-500 text-black'}`}>
+                    <span className={`w-3.5 h-3.5 lg:w-4 lg:h-4 rounded-full flex items-center justify-center text-[7px] lg:text-[8px] ${active ? 'bg-black text-amber-500' : 'bg-amber-500 text-black'}`}>
                         {count}
                     </span>
                 )}

@@ -210,10 +210,11 @@ export default function DashboardPage() {
                         <div className="flex items-center gap-4">
                             <Link
                                 href="/"
-                                className="flex items-center gap-2 px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all text-sm font-bold"
+                                className="flex items-center gap-2 px-3 lg:px-4 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-zinc-400 hover:text-white hover:bg-zinc-800 transition-all text-sm font-bold"
+                                title="View Site"
                             >
                                 <Eye className="w-4 h-4" />
-                                <span>View Site</span>
+                                <span className="hidden sm:inline">View Site</span>
                             </Link>
                             {role === 'super-admin' && <SeedButton />}
                             <button className="p-2.5 bg-zinc-900 border border-zinc-800 rounded-xl relative hover:bg-zinc-800 transition-colors">
@@ -230,20 +231,20 @@ export default function DashboardPage() {
 
                 <div className="p-6 lg:p-10 max-w-7xl mx-auto space-y-12">
                     {/* Hero Section */}
-                    <section className="relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-zinc-950 to-zinc-950 border border-zinc-800 rounded-[3rem] p-10 lg:p-16">
+                    <section className="relative overflow-hidden bg-gradient-to-br from-amber-500/10 via-zinc-950 to-zinc-950 border border-zinc-800 rounded-[2rem] lg:rounded-[3rem] p-6 lg:p-16">
                         <div className="relative z-10 max-w-2xl">
                             {/* Super Admin Note Section */}
                             <div className="mb-10 bg-zinc-900/40 backdrop-blur-md border border-amber-500/20 rounded-[2rem] p-8 shadow-2xl relative group overflow-hidden">
                                 <div className="flex items-center justify-between mb-4">
                                     <div className="flex items-center gap-3 text-amber-500">
-                                        <StickyNote className="w-5 h-5" />
-                                        <span className="text-[10px] font-black uppercase tracking-[0.3em]">Studio Broadcast</span>
+                                        <StickyNote className="w-4 h-4 lg:w-5 h-5" />
+                                        <span className="text-[8px] lg:text-[10px] font-black uppercase tracking-[0.3em]">Studio Broadcast</span>
                                     </div>
                                     <button
                                         onClick={() => isEditingNote ? handleNoteSave() : setIsEditingNote(true)}
-                                        className="px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-full text-[10px] font-bold uppercase tracking-widest transition-all"
+                                        className="px-3 lg:px-4 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white rounded-full text-[8px] lg:text-[10px] font-bold uppercase tracking-widest transition-all"
                                     >
-                                        {isEditingNote ? 'Post to Studio' : 'Update Broadcast'}
+                                        {isEditingNote ? 'Post' : 'Update'}
                                     </button>
                                 </div>
                                 {isEditingNote ? (
@@ -254,7 +255,7 @@ export default function DashboardPage() {
                                         placeholder="Enter a message for all dashboard users..."
                                     />
                                 ) : (
-                                    <p className="text-zinc-300 text-lg leading-relaxed font-serif italic">
+                                    <p className="text-zinc-300 text-base lg:text-lg leading-relaxed font-serif italic">
                                         {adminNote || "No active studio broadcasts at the moment."}
                                     </p>
                                 )}
@@ -263,17 +264,17 @@ export default function DashboardPage() {
                                 </div>
                             </div>
 
-                            <h2 className="text-4xl lg:text-5xl font-black mb-6 leading-tight">Your Digital Studio <br /><span className="text-amber-500">Command Center</span></h2>
-                            <p className="text-zinc-400 text-lg mb-10 leading-relaxed font-medium">Manage your professional portfolio, services, and team from one unified interface designed for efficiency and visual impact.</p>
-                            <div className="flex flex-wrap gap-4">
-                                <Link href="/dashboard/projects/new" className="px-8 py-4 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-2xl transition-all shadow-xl shadow-amber-500/20 active:scale-95 flex items-center gap-2">
+                            <h2 className="text-3xl lg:text-5xl font-black mb-6 leading-tight">Your Digital Studio <br /><span className="text-amber-500">Command Center</span></h2>
+                            <p className="text-zinc-400 text-base lg:text-lg mb-10 leading-relaxed font-medium">Manage your professional portfolio, services, and team from one unified interface designed for efficiency and visual impact.</p>
+                            <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+                                <Link href="/dashboard/projects/new" className="justify-center px-8 py-4 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-2xl transition-all shadow-xl shadow-amber-500/20 active:scale-95 flex items-center gap-2">
                                     Create New Project
                                 </Link>
-                                <Link href="/dashboard/blogs/new" className="px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-black rounded-2xl transition-all active:scale-95">
+                                <Link href="/dashboard/blogs/new" className="justify-center px-8 py-4 bg-zinc-800 hover:bg-zinc-700 text-white font-black rounded-2xl transition-all active:scale-95">
                                     Write Article
                                 </Link>
                                 {role === 'super-admin' && (
-                                    <Link href="/dashboard/users/new" className="px-8 py-4 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-600/30 font-black rounded-2xl transition-all active:scale-95 flex items-center gap-2">
+                                    <Link href="/dashboard/users/new" className="justify-center px-8 py-4 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-600/30 font-black rounded-2xl transition-all active:scale-95 flex items-center gap-2">
                                         Add New User
                                     </Link>
                                 )}
@@ -402,10 +403,11 @@ function SeedButton() {
         <button
             onClick={handleSeed}
             disabled={isSeeding}
-            className="flex items-center gap-2 px-4 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-amber-500/50 hover:bg-zinc-800 rounded-xl transition-all disabled:opacity-50 group"
+            className="flex items-center gap-2 px-3 lg:px-4 py-2.5 bg-zinc-900 border border-zinc-800 hover:border-amber-500/50 hover:bg-zinc-800 rounded-xl transition-all disabled:opacity-50 group"
+            title="Seed Data"
         >
             <Database className={`w-4 h-4 ${isSeeding ? 'animate-pulse text-amber-500' : 'text-zinc-500 group-hover:text-amber-500'}`} />
-            <span className="text-sm font-bold text-zinc-400 group-hover:text-white">{isSeeding ? 'Seeding...' : 'Seed Data'}</span>
+            <span className="text-sm font-bold text-zinc-400 group-hover:text-white hidden sm:inline">{isSeeding ? 'Seeding...' : 'Seed Data'}</span>
         </button>
     );
 }
