@@ -7,10 +7,7 @@ import Image from 'next/image';
 import { ArrowUpRight, Sparkles } from 'lucide-react';
 import { blogPosts } from '../../blog/blogData';
 
-const LatestJournal = () => {
-    // Take the 2 most recent posts
-    const recentPosts = blogPosts.slice(0, 2);
-
+const LatestJournal = ({ posts }: { posts: any[] }) => {
     return (
         <section className="w-full py-32 px-6 bg-white overflow-hidden">
             <div className="max-w-7xl mx-auto">
@@ -40,9 +37,9 @@ const LatestJournal = () => {
 
                 {/* Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-24">
-                    {recentPosts.map((post, index) => (
+                    {posts.map((post, index) => (
                         <motion.div
-                            key={post.id}
+                            key={post._id}
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -52,7 +49,7 @@ const LatestJournal = () => {
                             <Link href={`/blog/${post.slug}`}>
                                 <div className="relative aspect-[16/10] rounded-[3rem] overflow-hidden mb-10 bg-stone-100 shadow-sm border border-stone-100">
                                     <Image
-                                        src={post.image}
+                                        src={post.imageUrl || post.image || '/placeholder-blog.jpg'}
                                         alt={post.title}
                                         fill
                                         className="object-cover transition-transform duration-1000 group-hover:scale-110"

@@ -1,20 +1,29 @@
 import ProjectDetailPage from '@/app/Components/ProjectDetailPage';
-import { projects } from '@/app/projects/projectsData';
+import { getProjectById } from '@/app/actions/projects';
 import { notFound } from 'next/navigation';
 
 export default async function ProjectPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const project = projects.find((p) => p.id === parseInt(id));
 
-    if (!project) {
+    try {
+        const project = await getProjectById(id);
+
+        if (!project) {
+            return notFound();
+        }
+
+        // Ensure MongoDB object is serializable and match the expected type
+        const serializableProject = JSON.parse(JSON.stringify(project));
+
+        return (
+            <ProjectDetailPage
+                project={serializableProject}
+                backLink="/projects"
+                backText="Back to Masterpieces"
+            />
+        );
+    } catch (error) {
+        console.error('Error fetching project:', error);
         return notFound();
     }
-
-    return (
-        <ProjectDetailPage
-            project={project}
-            backLink="/projects"
-            backText="Back to Masterpieces"
-        />
-    );
 }

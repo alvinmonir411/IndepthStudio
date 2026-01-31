@@ -24,7 +24,7 @@ export default function ProjectDetailContent({ project }: ProjectDetailProps) {
                     className="absolute inset-0 z-0"
                 >
                     <Image
-                        src={project.image}
+                        src={project.imageUrl || project.image || '/placeholder-project.jpg'}
                         alt={project.title}
                         fill
                         className="object-cover"
@@ -75,15 +75,15 @@ export default function ProjectDetailContent({ project }: ProjectDetailProps) {
                                 </h2>
 
                                 <div className="prose prose-stone prose-xl max-w-none text-stone-600 font-light leading-relaxed mb-16 space-y-8">
-                                    {project.fullDescription.map((p, i) => (
+                                    {Array.isArray(project.fullDescription) ? project.fullDescription.map((p, i) => (
                                         <p key={i}>{p}</p>
-                                    ))}
+                                    )) : <p>{project.caption}</p>}
                                 </div>
 
                                 <div className="flex flex-wrap gap-6 pt-8">
                                     {project.walkthroughUrl && (
                                         <Link
-                                            href={`/projects/${project.id}/walkthrough`}
+                                            href={`/projects/${project._id || project.id}/walkthrough`}
                                             className="group flex items-center justify-center gap-4 px-12 py-6 rounded-full transition-all duration-500 shadow-2xl bg-stone-950 text-white hover:bg-amber-600"
                                         >
                                             <Expand size={20} />
@@ -142,7 +142,7 @@ export default function ProjectDetailContent({ project }: ProjectDetailProps) {
                                 <div className="pt-16 border-t border-stone-200">
                                     <p className="text-[10px] uppercase tracking-widest text-stone-400 font-bold mb-8">Selected Palette</p>
                                     <div className="grid grid-cols-1 gap-4">
-                                        {project.palette.map((m) => (
+                                        {(project.palette || []).map((m) => (
                                             <div key={m} className="flex items-center gap-4 group">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-amber-600 group-hover:scale-150 transition-transform" />
                                                 <span className="text-xs uppercase tracking-[0.2em] text-stone-600 font-medium">
@@ -180,7 +180,7 @@ export default function ProjectDetailContent({ project }: ProjectDetailProps) {
 
                     {/* Masonry Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 auto-rows-[300px] md:auto-rows-[400px]">
-                        {project.gallery.map((img, i) => (
+                        {(project.gallery || []).map((img, i) => (
                             <motion.div
                                 key={i}
                                 initial={{ opacity: 0, y: 30 }}
@@ -188,11 +188,11 @@ export default function ProjectDetailContent({ project }: ProjectDetailProps) {
                                 viewport={{ once: true }}
                                 transition={{ duration: 0.8, delay: i * 0.1 }}
                                 className={`relative rounded-[2.5rem] overflow-hidden group shadow-xl ${i === 0 ? 'md:col-span-2 md:row-span-2' :
-                                        i === 3 ? 'md:col-span-2' : ''
+                                    i === 3 ? 'md:col-span-2' : ''
                                     }`}
                             >
                                 <Image
-                                    src={img}
+                                    src={img || '/placeholder-project.jpg'}
                                     alt={`${project.title} gallery ${i + 1}`}
                                     fill
                                     className="object-cover transition-transform duration-1000 group-hover:scale-110"

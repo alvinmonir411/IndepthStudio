@@ -5,9 +5,16 @@ import MissionVision from '../Components/AboutUspages/MissionVision'
 import WhatMakesUsDifferent from '../Components/AboutUspages/WhatMakesUsDifferent'
 import DesignProcess from '../Components/AboutUspages/DesignProcess'
 import TeamSection from '../Components/AboutUspages/TeamSection'
+import { getTeamMembers } from '../actions/team'
 
 
-const page = () => {
+export default async function AboutPage() {
+    const allMembers = await getTeamMembers();
+
+    // Separate founder from team members using the isFounder flag
+    const founder = allMembers.find((m: any) => m.isFounder === true) || allMembers.find((m: any) => m.role.toLowerCase().includes('founder'));
+    const teamMembers = allMembers.filter((m: any) => m !== founder);
+
     return (
         <div>
             <AboutHero imageSrc="/aboutUSpages.jpg" imageAlt="About Us" />
@@ -16,9 +23,7 @@ const page = () => {
             <MissionVision />
             <WhatMakesUsDifferent />
             <DesignProcess />
-            <TeamSection />
+            <TeamSection founder={founder} teamMembers={teamMembers} />
         </div>
     )
 }
-
-export default page

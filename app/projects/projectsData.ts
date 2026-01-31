@@ -1,8 +1,10 @@
 export interface Project {
-    id: number;
+    id?: number | string;
+    _id?: string;
     title: string;
     caption: string;
     image: string;
+    imageUrl?: string;
     category: string;
     location: string;
     year: string;

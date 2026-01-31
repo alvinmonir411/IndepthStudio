@@ -6,13 +6,18 @@ import ServicesGrid from '@/app/Components/ServicesPages/ServicesGrid'
 import ServiceRelatedProjects from '@/app/Components/ServicesPages/ServiceRelatedProjects'
 import DesignProcess from '@/app/Components/ServicesPages/DesignProcess'
 import ServicesCTA from '@/app/Components/ServicesPages/ServicesCTA'
+import { getServices } from '@/app/actions/services'
 
-const page = () => {
+export const revalidate = 3600;
+
+export default async function ServicesPage() {
+    const services = await getServices();
+
     return (
         <main className="bg-stone-950 min-h-screen">
             <ServicesHero />
             <ServicesOverview />
-            <ServicesGrid />
+            <ServicesGrid services={services} />
             <WhyChooseServices />
             <ServiceRelatedProjects />
             <DesignProcess />
@@ -20,8 +25,3 @@ const page = () => {
         </main>
     )
 }
-
-
-
-
-export default page

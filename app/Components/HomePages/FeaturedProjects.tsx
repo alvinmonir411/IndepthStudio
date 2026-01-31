@@ -6,7 +6,7 @@ import { ArrowUpRight, Cuboid } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-const ProjectCard = ({ project, index }: { project: Project; index: number }) => {
+const ProjectCard = ({ project, index }: { project: any; index: number }) => {
     const cardRef = useRef(null);
 
     const { scrollYProgress } = useScroll({
@@ -22,12 +22,11 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
             ref={cardRef}
             style={{ y: yTransform }}
             className={`w-full ${isEven ? 'md:mt-0' : 'md:mt-24'}`}
-        // Removed variants={projectVariant} to keep it simple or I can define it above
         >
-            <Link href={`/projects/${project.id}`} className="group block relative">
+            <Link href={`/projects/${project._id}`} className="group block relative">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-[3rem] bg-stone-100 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] group-hover:shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] transition-all duration-700">
                     <Image
-                        src={project.image}
+                        src={project.imageUrl || project.image || '/placeholder-project.jpg'}
                         alt={project.title}
                         fill
                         className="object-cover transition-transform duration-[1.5s] ease-[0.22,1,0.36,1] group-hover:scale-110"
@@ -66,7 +65,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
                         <div className="flex items-center gap-2 text-stone-400 text-xs uppercase tracking-widest font-bold">
                             <span>{project.category}</span>
                             <span className="w-1 h-1 bg-stone-300 rounded-full" />
-                            <span>Project 0{project.id}</span>
+                            <span>Featured Project</span>
                         </div>
                     </div>
                 </div>
@@ -75,7 +74,7 @@ const ProjectCard = ({ project, index }: { project: Project; index: number }) =>
     );
 };
 
-const FeaturedProjects = () => {
+const FeaturedProjects = ({ projects }: { projects: any[] }) => {
     return (
         <section className="bg-[#FDF8F3] py-32 md:py-48 relative overflow-hidden">
             <div className="max-w-7xl mx-auto px-6 md:px-12">
@@ -141,9 +140,9 @@ const FeaturedProjects = () => {
 
                 {/* PROJECTS GRID */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-24 md:gap-y-32">
-                    {projects.filter(p => p.isFeatured).map((project, index) => (
+                    {projects.map((project, index) => (
                         <ProjectCard
-                            key={project.id}
+                            key={project._id}
                             project={project}
                             index={index}
                         />

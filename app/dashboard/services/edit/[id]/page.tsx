@@ -1,0 +1,370 @@
+"use client";
+
+import { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Save, Upload, Trash2, Zap, Heart, Award } from 'lucide-react';
+import { getServiceById, updateService } from '@/app/actions/services';
+import { uploadImage } from '@/app/actions/cloudinary';
+import { getDashboardRole } from '@/app/actions/dashboard';
+import Link from 'next/link';
+
+export default function EditServicePage() {
+    const router = useRouter();
+    const params = useParams();
+    const id = params.id as string;
+
+    const [role, setRole] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+    const [error, setError] = useState('');
+    const [isPageLoading, setIsPageLoading] = useState(true);
+
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        longDescription: '',
+        icon: 'Zap',
+        features: '',
+        included: '',
+        approach: '',
+        timeline: '',
+        suitableFor: '',
+        materials: '',
+        imageUrl: '',
+    });
+
+    useEffect(() => {
+        async function init() {
+            const currentRole = await getDashboardRole();
+            if (!currentRole) {
+                router.push('/dashboard');
+                return;
+            }
+            setRole(currentRole);
+
+            const service = await getServiceById(id);
+            if (service) {
+                setFormData({
+                    title: service.title || '',
+                    description: service.description || '',
+                    longDescription: service.longDescription || '',
+                    icon: service.icon || 'Zap',
+                    features: Array.isArray(service.features)
+                        ? service.features.map((f: any) => typeof f === 'string' ? f : f.title).join(', ')
+                        : '',
+                    included: service.details?.included?.join(', ') || '',
+                    approach: service.details?.approach || '',
+                    timeline: service.details?.timeline || '',
+                    suitableFor: service.details?.suitableFor || '',
+                    materials: service.details?.materials || '',
+                    imageUrl: service.imageUrl || '',
+                });
+            } else {
+                setError('Service not found');
+            }
+            setIsPageLoading(false);
+        }
+        init();
+    }, [id, router]);
+
+    const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setIsUploading(true);
+        setError('');
+
+        const uploadFormData = new FormData();
+        uploadFormData.append('file', file);
+
+        try {
+            const result: any = await uploadImage(uploadFormData);
+            if (result.success) {
+                setFormData({ ...formData, imageUrl: result.url });
+            } else {
+                setError(result.error || 'Upload failed');
+            }
+        } catch (err) {
+            setError('Image upload failed');
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsLoading(true);
+        setError('');
+
+        const processedData = {
+            ...formData,
+            features: formData.features.split(',').map(f => ({ title: f.trim(), description: '' })).filter(f => f.title !== ''),
+            details: {
+                included: formData.included.split(',').map(i => i.trim()).filter(i => i !== ''),
+                approach: formData.approach,
+                timeline: formData.timeline,
+                suitableFor: formData.suitableFor,
+                materials: formData.materials,
+            }
+        };
+
+        try {
+            const result = await updateService(id, processedData);
+            if (result.success) {
+                router.push('/dashboard');
+            } else {
+                setError(result.error || 'Failed to update service');
+            }
+        } catch (err) {
+            setError('An unexpected error occurred');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    if (isPageLoading) {
+        return (
+            <div className="min-h-screen bg-zinc-950 flex items-center justify-center">
+                <div className="w-12 h-12 border-4 border-amber-500/20 border-t-amber-500 rounded-full animate-spin" />
+            </div>
+        );
+    }
+
+    return (
+        <div className="min-h-screen bg-zinc-950 text-white font-sans selection:bg-amber-500/30 pb-20">
+            <header className="sticky top-0 z-20 bg-zinc-950/80 backdrop-blur-md border-b border-zinc-800 px-6 lg:px-10 py-6">
+                <div className="flex items-center justify-between max-w-5xl mx-auto w-full">
+                    <div className="flex items-center gap-4">
+                        <Link
+                            href="/dashboard"
+                            className="flex items-center gap-3 px-4 py-2.5 bg-zinc-900 border border-zinc-800 rounded-xl hover:bg-zinc-800 transition-all group"
+                        >
+                            <ArrowLeft className="w-5 h-5 text-zinc-400 group-hover:text-amber-500 transition-colors" />
+                            <span className="text-sm font-bold text-zinc-500 group-hover:text-white transition-colors">Back to Dashboard</span>
+                        </Link>
+                        <div className="w-px h-8 bg-zinc-800 mx-2" />
+                        <div>
+                            <h1 className="text-2xl font-bold">Edit Service</h1>
+                            <p className="text-zinc-500 text-sm">Update "{formData.title}" details.</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main className="p-6 lg:p-10 max-w-5xl mx-auto">
+                <form onSubmit={handleSubmit} className="space-y-10">
+                    <section className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 space-y-8">
+                        <h2 className="text-xl font-bold flex items-center gap-3">
+                            <span className="w-8 h-8 bg-amber-500/10 text-amber-500 rounded-lg flex items-center justify-center text-sm font-black">01</span>
+                            Core Service Details
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Service Title</label>
+                                <input
+                                    type="text"
+                                    value={formData.title}
+                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                    className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                    placeholder="e.g. Interior Architecture"
+                                    required
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Display Icon</label>
+                                <select
+                                    value={formData.icon}
+                                    onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                                    className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all"
+                                >
+                                    <option value="Zap">⚡ Zap (Speed/Innovation)</option>
+                                    <option value="Heart">❤️ Heart (Passion/Care)</option>
+                                    <option value="Award">🏆 Award (Quality/Excellence)</option>
+                                    <option value="Paintbrush2">🖌️ Paintbrush (Design)</option>
+                                    <option value="Gem">💎 Gem (Luxury)</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Short Summary (For Cards)</label>
+                            <textarea
+                                value={formData.description}
+                                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all min-h-[100px] resize-none placeholder:text-zinc-700"
+                                placeholder="A brief, 2-line summary for service listing cards..."
+                                required
+                            />
+                        </div>
+
+                        <div className="space-y-3">
+                            <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Detailed Description (Introduction)</label>
+                            <textarea
+                                value={formData.longDescription}
+                                onChange={(e) => setFormData({ ...formData, longDescription: e.target.value })}
+                                className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all min-h-[150px] resize-none placeholder:text-zinc-700"
+                                placeholder="The full introductory text appearing at the top of the service page..."
+                            />
+                        </div>
+                    </section>
+
+                    <section className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 space-y-8">
+                        <h2 className="text-xl font-bold flex items-center gap-3">
+                            <span className="w-8 h-8 bg-amber-500/10 text-amber-500 rounded-lg flex items-center justify-center text-sm font-black">02</span>
+                            Scope & Features
+                        </h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Key Features (Comma separated)</label>
+                                <input
+                                    type="text"
+                                    value={formData.features}
+                                    onChange={(e) => setFormData({ ...formData, features: e.target.value })}
+                                    className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                    placeholder="e.g. Space Planning, Color Theory"
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Included in Scope (Comma separated)</label>
+                                <input
+                                    type="text"
+                                    value={formData.included}
+                                    onChange={(e) => setFormData({ ...formData, included: e.target.value })}
+                                    className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                    placeholder="e.g. 3D Renders, Material Sourcing"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Our Approach</label>
+                                <input
+                                    type="text"
+                                    value={formData.approach}
+                                    onChange={(e) => setFormData({ ...formData, approach: e.target.value })}
+                                    className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                    placeholder="e.g. Iterative and collaborative design process"
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Expected Timeline</label>
+                                <input
+                                    type="text"
+                                    value={formData.timeline}
+                                    onChange={(e) => setFormData({ ...formData, timeline: e.target.value })}
+                                    className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                    placeholder="e.g. 4-8 Weeks"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Suitable For</label>
+                                <input
+                                    type="text"
+                                    value={formData.suitableFor}
+                                    onChange={(e) => setFormData({ ...formData, suitableFor: e.target.value })}
+                                    className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                    placeholder="e.g. High-end Residential, Commercial Hubs"
+                                />
+                            </div>
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Premium Materials</label>
+                                <input
+                                    type="text"
+                                    value={formData.materials}
+                                    onChange={(e) => setFormData({ ...formData, materials: e.target.value })}
+                                    className="w-full px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                    placeholder="e.g. Italian Marble, Austrian Oak"
+                                />
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="bg-zinc-900/50 border border-zinc-800 rounded-3xl p-8 space-y-8">
+                        <h2 className="text-xl font-bold flex items-center gap-3">
+                            <span className="w-8 h-8 bg-amber-500/10 text-amber-500 rounded-lg flex items-center justify-center text-sm font-black">03</span>
+                            Service Imagery
+                        </h2>
+
+                        <div className="space-y-6">
+                            <div className="space-y-3">
+                                <label className="text-sm font-bold text-zinc-400 uppercase tracking-wider">Cover Image</label>
+                                <div className="flex flex-col gap-6">
+                                    <div className="flex gap-4">
+                                        <input
+                                            type="text"
+                                            value={formData.imageUrl}
+                                            onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                                            className="flex-1 px-6 py-4 bg-zinc-950 border border-zinc-800 rounded-2xl focus:ring-2 focus:ring-amber-500 outline-none transition-all placeholder:text-zinc-700"
+                                            placeholder="URL or upload →"
+                                        />
+                                        <label className="flex items-center gap-3 px-8 py-4 bg-zinc-800 border border-zinc-700 hover:border-amber-500/50 hover:bg-zinc-700 rounded-2xl cursor-pointer transition-all group">
+                                            <input
+                                                type="file"
+                                                className="hidden"
+                                                accept="image/*"
+                                                onChange={handleImageUpload}
+                                                disabled={isUploading}
+                                            />
+                                            {isUploading ? (
+                                                <div className="w-5 h-5 border-2 border-amber-500/20 border-t-amber-500 rounded-full animate-spin" />
+                                            ) : (
+                                                <Upload className="w-5 h-5 text-zinc-400 group-hover:text-amber-500" />
+                                            )}
+                                            <span className="font-bold text-zinc-400 group-hover:text-white">
+                                                Upload
+                                            </span>
+                                        </label>
+                                    </div>
+                                    {formData.imageUrl && (
+                                        <div className="relative aspect-video w-full rounded-3xl overflow-hidden border border-zinc-800 bg-zinc-800/50">
+                                            <img src={formData.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={() => setFormData({ ...formData, imageUrl: '' })}
+                                                className="absolute top-4 right-4 p-2 bg-black/60 backdrop-blur-md rounded-xl text-white hover:text-red-500 transition-colors"
+                                            >
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {error && (
+                        <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center gap-4 text-red-500">
+                            <Trash2 className="w-5 h-5" />
+                            <p className="font-medium">{error}</p>
+                        </div>
+                    )}
+
+                    <div className="flex items-center justify-end gap-6 pt-10 border-t border-zinc-800">
+                        <Link href="/dashboard" className="text-zinc-500 font-bold hover:text-white transition-colors">
+                            Discard Changes
+                        </Link>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="flex items-center gap-3 px-10 py-4 bg-amber-500 hover:bg-amber-400 text-black font-black rounded-2xl disabled:opacity-50 transition-all shadow-xl shadow-amber-500/20 active:scale-95"
+                        >
+                            {isLoading ? (
+                                <div className="w-5 h-5 border-2 border-black/30 border-t-black rounded-full animate-spin" />
+                            ) : (
+                                <Save className="w-5 h-5" />
+                            )}
+                            <span>Save Changes</span>
+                        </button>
+                    </div>
+                </form>
+            </main>
+        </div>
+    );
+}

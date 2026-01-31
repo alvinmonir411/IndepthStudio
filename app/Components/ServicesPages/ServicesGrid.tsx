@@ -7,7 +7,15 @@ import { ArrowRight, Sparkles } from 'lucide-react';
 import { servicesData } from '@/app/services/servicesData';
 import MagneticButton from '../MagneticButton';
 
-export default function ServicesGrid() {
+interface Service {
+    _id: string;
+    title: string;
+    description: string;
+    shortDescription: string;
+    imageUrl: string;
+}
+
+export default function ServicesGrid({ services }: { services: Service[] }) {
     return (
         <section className="py-24 bg-[#FDF8F3]">
             <div className="container mx-auto px-6 md:px-12">
@@ -69,9 +77,9 @@ export default function ServicesGrid() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 lg:gap-12">
-                    {servicesData.map((service, index) => (
+                    {services.map((service, index) => (
                         <motion.div
-                            key={service.id}
+                            key={service._id}
                             initial={{ opacity: 0, y: 50 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -87,7 +95,7 @@ export default function ServicesGrid() {
                                 {/* Card Image with Parallax Scale */}
                                 <div className="relative h-72 overflow-hidden">
                                     <Image
-                                        src={service.image}
+                                        src={service.imageUrl || '/placeholder-service.jpg'}
                                         alt={service.title}
                                         fill
                                         className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110"
@@ -110,13 +118,13 @@ export default function ServicesGrid() {
                                     </div>
 
                                     <p className="text-stone-500 font-light text-base leading-relaxed mb-10 line-clamp-3">
-                                        {service.shortDescription}
+                                        {service.shortDescription || service.description}
                                     </p>
 
                                     <div className="mt-auto">
                                         <MagneticButton strength={0.4}>
                                             <Link
-                                                href={`/services/${service.id}`}
+                                                href={`/services/${service._id}`}
                                                 scroll={false}
                                                 className="group/btn inline-flex items-center gap-4 text-stone-900 group-hover:text-amber-600 transition-colors duration-300"
                                             >

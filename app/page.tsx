@@ -8,9 +8,17 @@ import LatestJournal from "./Components/HomePages/LatestJournal";
 import BeforeAfterSlider from "./Components/HomePages/BeforeAfterSlider";
 import AchievementsSection from "./Components/HomePages/AchievementsSection";
 import ClientTestimonials from "./Components/HomePages/ClientTestimonials";
+import { getProjects } from "./actions/projects";
+import { getBlogs } from "./actions/blog";
 
+export const revalidate = 3600;
 
-export default function Home() {
+export default async function Home() {
+  const allProjects = await getProjects();
+  const featuredProjects = allProjects.filter((p: any) => p.isFeatured).slice(0, 4);
+  const allBlogs = await getBlogs();
+  const latestBlogs = allBlogs.slice(0, 2);
+
   return (
     <main className="w-full min-h-screen bg-zinc-50 font-sans dark:bg-black">
       <Banner />
@@ -18,8 +26,8 @@ export default function Home() {
       <ScrollStackImages />
       <WhyElegance />
       <WhyChooseUs />
-      <FeaturedProjects />
-      <LatestJournal />
+      <FeaturedProjects projects={featuredProjects} />
+      <LatestJournal posts={latestBlogs} />
 
       {/* Transformation Showcase Section */}
       <section className="relative w-full py-20 px-6 overflow-hidden bg-gradient-to-br from-zinc-950 via-zinc-900 to-zinc-950">
