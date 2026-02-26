@@ -77,7 +77,7 @@ export async function sendContactEmail(formData: {
         return { success: true };
     } catch (error) {
         console.error('Email sending failed:', error);
-        return { success: true, warning: 'Lead saved but email failed' }; // Still return success if DB saved
+        return { success: true, warning: 'Lead saved but email failed' };
     }
 }
 
