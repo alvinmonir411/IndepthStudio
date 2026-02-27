@@ -64,7 +64,7 @@ const Footer = () => {
                             <div className="w-16 h-16 bg-amber-500 flex items-center justify-center">
                                 <Sparkles className="text-black w-8 h-8" />
                             </div>
-                            <span className="text-4xl font-black text-white tracking-tighter uppercase">In-Depth.</span>
+                            <span className="text-4xl font-black text-white tracking-tighter uppercase">INDEPTH</span>
                         </motion.div>
 
                         <motion.h4 variants={itemVariants} className="text-5xl lg:text-7xl font-black text-white leading-[1] mb-16 uppercase max-w-2xl">
@@ -74,11 +74,11 @@ const Footer = () => {
                         <motion.div variants={itemVariants} className="flex gap-12">
                             <div className="flex flex-col gap-2">
                                 <span className="text-zinc-600 text-[10px] font-black uppercase tracking-[0.4em]">Inquiries</span>
-                                <a href="mailto:hello@indepth.studio" className="text-white text-xl font-bold hover:text-amber-500 transition-colors underline decoration-amber-500/20 underline-offset-8">hello@indepth.studio</a>
+                                <a href="mailto:indepth.limited@gmail.com" className="text-white text-xl font-bold hover:text-amber-500 transition-colors underline decoration-amber-500/20 underline-offset-8">indepth.limited@gmail.com</a>
                             </div>
                             <div className="flex flex-col gap-2">
                                 <span className="text-zinc-600 text-[10px] font-black uppercase tracking-[0.4em]">Direct</span>
-                                <a href="tel:+442079460123" className="text-white text-xl font-bold hover:text-amber-500 transition-colors underline decoration-amber-500/20 underline-offset-8">+44 20 7946 0123</a>
+                                <a href="tel:01879004888" className="text-white text-xl font-bold hover:text-amber-500 transition-colors underline decoration-amber-500/20 underline-offset-8">01879004888</a>
                             </div>
                         </motion.div>
                     </div>

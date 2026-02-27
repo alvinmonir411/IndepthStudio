@@ -26,7 +26,7 @@ const AboutSection = () => {
                                 <span className="italic text-[#8B4513]">Your Story</span>
                             </h2>
                             <p className="text-stone-600 text-lg leading-relaxed mb-8 font-light">
-                                At IndepthStudio, we believe that every space has a voice. Our mission is to listen to your vision and translate it into a living reality that breathes elegance, comfort, and sophistication.
+                                At INDEPTH STUDIO, we believe that every space has a voice. Our mission is to listen to your vision and translate it into a living reality that breathes elegance, comfort, and sophistication.
                             </p>
 
                             <div className="flex flex-col gap-4 mb-10">
@@ -81,7 +81,7 @@ const AboutSection = () => {
                                 transition={{ delay: 0.5, duration: 0.8 }}
                                 className="absolute bottom-8 left-8 bg-white/90 backdrop-blur-md p-6 rounded-xl shadow-lg max-w-xs hidden sm:block"
                             >
-                                <p className="text-[#5C4033] font-serif text-2xl font-bold mb-1">15+</p>
+                                <p className="text-[#5C4033] font-serif text-2xl font-bold mb-1">8+</p>
                                 <p className="text-stone-600 text-xs uppercase tracking-wider">Years of Experience</p>
                             </motion.div>
                         </motion.div>

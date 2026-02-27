@@ -20,15 +20,6 @@ export const Banner = () => {
             {/* Content */}
             <div className="container mx-auto px-6 md:px-12 relative z-10 pt-20">
                 <div className="">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-                    >
-                        <span className="text-amber-400 uppercase tracking-[0.25em] text-xs md:text-sm font-medium mb-6 inline-block border-b border-amber-400/30 pb-2">
-                            Award-Winning Interior Design Studio
-                        </span>
-                    </motion.div>
 
                     <motion.h1
                         initial={{ opacity: 0, y: 30 }}
@@ -36,8 +27,8 @@ export const Banner = () => {
                         transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
                         className="text-5xl md:text-7xl lg:text-8xl font-light text-stone-100 mb-8 leading-[1.1] tracking-tight"
                     >
-                        Crafting Spaces That <br />
-                        <span className="text-amber-100/90 font-serif italic">Inspire Living</span>
+                        Bringing Your <br />
+                        <span className="text-amber-100/90 font-serif italic">Space To Life</span>
                     </motion.h1>
 
                     <motion.p
